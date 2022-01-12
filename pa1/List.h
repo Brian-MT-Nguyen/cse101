@@ -6,7 +6,7 @@
 #pragma once
 
 // Exported type --------------------------------------------------------------
-typedef struct ListObj *List;
+typedef struct ListObj* List;
 
 // Constructors-Destructors ---------------------------------------------------
 
@@ -14,7 +14,7 @@ typedef struct ListObj *List;
 List newList(void);
 
 // Frees all heap memory associated with *pL, and sets *pL to NULL.
-void freeList(List *pL);
+void freeList(List* pL);
 
 // Access functions -----------------------------------------------------------
 
@@ -90,7 +90,7 @@ void delete (List L);
 
 // Prints to the file pointed to by out, a string representation of L consisting
 // of a space separated sequence of integers, with front on left.
-void printList(FILE *out, List L);
+void printList(FILE* out, List L);
 
 // Returns a new List representing the same integer sequence as L. The cursor in
 // the new list is undefined, regardless of the state of the cursor in L. The
