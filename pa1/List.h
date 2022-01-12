@@ -1,4 +1,15 @@
+//-----------------------------------------------------------------------------
+// List.h
+// Header file for List ADT
+//-----------------------------------------------------------------------------
+
+#pragma once
+
+// Exported type --------------------------------------------------------------
+typedef struct ListObj *List;
+
 // Constructors-Destructors ---------------------------------------------------
+
 // Creates and returns a new empty List.
 List newList(void);
 
@@ -6,6 +17,7 @@ List newList(void);
 void freeList(List *pL);
 
 // Access functions -----------------------------------------------------------
+
 // Returns the number of elements in L.
 int length(List L);
 
@@ -26,6 +38,7 @@ int get(List L);
 bool equals(List A, List B);
 
 // Manipulation procedures ----------------------------------------------------
+
 // Resets L to its original empty state.
 void clear(List L);
 
@@ -74,6 +87,7 @@ void deleteBack(List L);
 void delete (List L);
 
 // Other operations -----------------------------------------------------------
+
 // Prints to the file pointed to by out, a string representation of L consisting
 // of a space separated sequence of integers, with front on left.
 void printList(FILE *out, List L);
