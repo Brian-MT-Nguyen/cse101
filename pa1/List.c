@@ -494,7 +494,7 @@ void printList(FILE* out, List L)
 
 // copyList()
 // Returns a new List representing the same integer sequence as L. The cursor in the new list is undefined, regardless of the state of the cursor in L. The state of L is unchanged.
-void copyList(List L)
+List copyList(List L)
 {
 	if (L == NULL) {
 		fprintf(stderr, "List Error: calling delete() on NULL List reference\n");
