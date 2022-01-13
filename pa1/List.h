@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include <stdio.h>
+#include <stdbool.h>
+
 // Exported type --------------------------------------------------------------
 typedef struct ListObj* List;
 
@@ -84,7 +87,7 @@ void deleteFront(List L);
 void deleteBack(List L);
 
 // Delete cursor element, making cursor undefined. Pre: length()>0, index()>=0
-void delete (List L);
+void delete(List L);
 
 // Other operations -----------------------------------------------------------
 
