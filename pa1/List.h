@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 // Exported type --------------------------------------------------------------
 typedef struct ListObj* List;
@@ -58,12 +58,12 @@ void moveBack(List L);
 
 // If cursor is defined and not at front, move cursor one step toward the front
 // of L; if cursor is defined and at front, cursor becomes undefined; if cursor
-// is undefined do nothing
+// is undefined do nothing.
 void movePrev(List L);
 
 // If cursor is defined and not at back, move cursor one step toward the back of
 // L; if cursor is defined and at back, cursor becomes undefined; if cursor is
-// undefined do nothing
+// undefined do nothing.
 void moveNext(List L);
 
 // Insert new element into L. If L is non-empty, insertion takes place before
@@ -87,7 +87,7 @@ void deleteFront(List L);
 void deleteBack(List L);
 
 // Delete cursor element, making cursor undefined. Pre: length()>0, index()>=0
-void delete(List L);
+void delete (List L);
 
 // Other operations -----------------------------------------------------------
 
