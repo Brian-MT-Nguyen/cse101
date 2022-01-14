@@ -178,8 +178,8 @@ void clear(List L)
 		fprintf(stderr, "List Error: calling clear() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	while(L->front != NULL) {
-		deleteFront(L);	
+	while (L->front != NULL) {
+		deleteFront(L);
 	}
 	L->length = 0;
 	L->index = -1;
@@ -249,8 +249,7 @@ void movePrev(List L)
 	if (L->index == 0) {
 		L->cursor = NULL;
 		L->index -= 1;
-	}
-	else {
+	} else {
 		L->cursor = L->cursor->prev;
 		L->index -= 1;
 	}
@@ -270,8 +269,7 @@ void moveNext(List L)
 	if (L->index == (L->length - 1)) {
 		L->cursor = NULL;
 		L->index = -1;
-	}
-	else {
+	} else {
 		L->cursor = L->cursor->next;
 		L->index += 1;
 	}
@@ -290,8 +288,7 @@ void prepend(List L, int x)
 		L->front = N;
 		L->back = N;
 		L->length += 1;
-	}
-	else {
+	} else {
 		Node N = newNode(x);
 		N->next = L->front;
 		L->front->prev = N;
@@ -316,8 +313,7 @@ void append(List L, int x)
 		L->front = N;
 		L->back = N;
 		L->length += 1;
-	}
-	else {
+	} else {
 		Node N = newNode(x);
 		N->prev = L->back;
 		L->back->next = N;
@@ -345,8 +341,7 @@ void insertBefore(List L, int x)
 	}
 	if (L->index == 0) {
 		prepend(L, x);
-	}
-	else {
+	} else {
 		Node N = newNode(x);
 		N->next = L->cursor;
 		N->prev = L->cursor->prev;
@@ -376,8 +371,7 @@ void insertAfter(List L, int x)
 	}
 	if (L->index == (L->length - 1)) {
 		append(L, x);
-	}
-	else {
+	} else {
 		Node N = newNode(x);
 		N->next = L->cursor->next;
 		N->prev = L->cursor;
@@ -401,15 +395,15 @@ void deleteFront(List L)
 		exit(EXIT_FAILURE);
 	}
 	if (L->length == 1) {
-		freeNode(&L->front);	
+		freeNode(&L->front);
 		L->front = NULL;
+		L->cursor = NULL;
 		L->back = NULL;
 		L->index = -1;
 		L->length -= 1;
-	}
-	else {
+	} else {
 		L->front = L->front->next;
-		freeNode(&L->front->prev);	
+		freeNode(&L->front->prev);
 		L->index -= 1;
 		L->length -= 1;
 	}
@@ -431,15 +425,16 @@ void deleteBack(List L)
 	if (L->length == 1) {
 		freeNode(&L->back);
 		L->front = NULL;
+		L->cursor = NULL;
 		L->back = NULL;
 		L->index = -1;
 		L->length -= 1;
-	}
-	else{
+	} else {
 		L->back = L->back->prev;
 		freeNode(&L->back->next);
 		L->length -= 1;
-		if (L->cursor == NULL) {
+		if (L->index == L->length) {
+			L->cursor = NULL;
 			L->index = -1;
 		}
 	}
@@ -464,13 +459,13 @@ void delete (List L)
 	}
 	if (L->cursor == L->front) {
 		deleteFront(L);
-	}
-	if (L->cursor == L->back) {
+	} else if (L->cursor == L->back) {
 		deleteBack(L);
 	} else {
 		L->cursor->prev->next = L->cursor->next;
 		L->cursor->next->prev = L->cursor->prev;
 		freeNode(&L->cursor);
+		L->cursor = NULL;
 		L->index = -1;
 		L->length -= 1;
 	}
