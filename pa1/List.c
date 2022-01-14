@@ -50,7 +50,7 @@ void freeNode(Node* pN)
 // Returns reference to new empty List object.
 List newList(void)
 {
-	List L = malloc(sizeof(List));
+	List L = malloc(sizeof(ListObj));
 	L->front = NULL;
 	L->cursor = NULL;
 	L->back = NULL;
@@ -178,8 +178,8 @@ void clear(List L)
 		fprintf(stderr, "List Error: calling clear() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	for (moveFront(L); L->index < L->length; moveNext(L)) {
-		freeNode(&L->cursor);
+	while(L->front != NULL) {
+		deleteFront(L);	
 	}
 	L->length = 0;
 	L->index = -1;
@@ -250,7 +250,7 @@ void movePrev(List L)
 		L->cursor = NULL;
 		L->index -= 1;
 	}
-	if (L->index > 0) {
+	else {
 		L->cursor = L->cursor->prev;
 		L->index -= 1;
 	}
@@ -271,7 +271,7 @@ void moveNext(List L)
 		L->cursor = NULL;
 		L->index = -1;
 	}
-	if (L->index < (L->length - 1)) {
+	else {
 		L->cursor = L->cursor->next;
 		L->index += 1;
 	}
@@ -291,7 +291,7 @@ void prepend(List L, int x)
 		L->back = N;
 		L->length += 1;
 	}
-	if (L->length > 0) {
+	else {
 		Node N = newNode(x);
 		N->next = L->front;
 		L->front->prev = N;
@@ -317,9 +317,10 @@ void append(List L, int x)
 		L->back = N;
 		L->length += 1;
 	}
-	if (L->length > 0) {
+	else {
 		Node N = newNode(x);
 		N->prev = L->back;
+		L->back->next = N;
 		L->back = N;
 		L->length += 1;
 	}
@@ -345,7 +346,7 @@ void insertBefore(List L, int x)
 	if (L->index == 0) {
 		prepend(L, x);
 	}
-	if (L->index > 0) {
+	else {
 		Node N = newNode(x);
 		N->next = L->cursor;
 		N->prev = L->cursor->prev;
@@ -376,7 +377,7 @@ void insertAfter(List L, int x)
 	if (L->index == (L->length - 1)) {
 		append(L, x);
 	}
-	if (L->index < (L->length - 1)) {
+	else {
 		Node N = newNode(x);
 		N->next = L->cursor->next;
 		N->prev = L->cursor;
@@ -400,15 +401,15 @@ void deleteFront(List L)
 		exit(EXIT_FAILURE);
 	}
 	if (L->length == 1) {
+		freeNode(&L->front);	
 		L->front = NULL;
 		L->back = NULL;
-		freeNode(&L->front);
 		L->index = -1;
 		L->length -= 1;
 	}
-	if (L->length > 1) {
+	else {
 		L->front = L->front->next;
-		freeNode(&L->front);
+		freeNode(&L->front->prev);	
 		L->index -= 1;
 		L->length -= 1;
 	}
@@ -428,15 +429,15 @@ void deleteBack(List L)
 		exit(EXIT_FAILURE);
 	}
 	if (L->length == 1) {
+		freeNode(&L->back);
 		L->front = NULL;
 		L->back = NULL;
-		freeNode(&L->back);
 		L->index = -1;
 		L->length -= 1;
 	}
-	if (L->length > 1) {
+	else{
 		L->back = L->back->prev;
-		freeNode(&L->back);
+		freeNode(&L->back->next);
 		L->length -= 1;
 		if (L->cursor == NULL) {
 			L->index = -1;
