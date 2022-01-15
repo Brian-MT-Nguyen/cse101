@@ -411,6 +411,9 @@ void deleteFront(List L)
 		L->front = L->front->next;
 		freeNode(&L->front->prev);
 		L->index -= 1;
+		if(L->index == -1) {
+			L->cursor = NULL;
+		}
 		L->length -= 1;
 	}
 }
