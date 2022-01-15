@@ -1,6 +1,6 @@
 # Programming Assignment 1
 
-##Table of Contents
+## Table of Contents
 1. List.h
     * The header file or interface of the Integer List ADT.
 2. List.c
