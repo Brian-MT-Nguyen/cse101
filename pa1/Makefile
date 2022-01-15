@@ -2,7 +2,7 @@
 # Brian Nguyen, bnguy118
 # 2022 Winter CSE 101 PA1
 # Makefile
-# The makefile that runs and compilies the files to run the program of PA 1
+# The makefile that runs and compilies the files to run the program of PA1
 # Also removes computer geneterated files, formats code, and checks for
 # memory leaks in clients
 #
