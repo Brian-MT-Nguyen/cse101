@@ -16,6 +16,6 @@ The Table of Contents of all files in this program
 4. Lex.c
     * The Client function that lexicographically orders the line of a file using the List ADT via indirect sorting of an array of strings.
 5. Makefile
-    * The make file that builds and complies the program to be run. It also cleans all computer generated files, formats code, and checks for memory leaks within the clients.
+    * The make file that builds and complies the program of PA1 to be run. It also cleans all computer generated files, formats code, and checks for memory leaks within the clients.
 6. README
     * Contains the Table of Contents of all files in this program.
