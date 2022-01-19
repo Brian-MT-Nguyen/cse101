@@ -9,29 +9,83 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define NIL -7
+/*** Structs ***/
+
+// private GraphObj type
+typedef struct GraphObj {
+	List *adjList;
+	int *color;
+	int *parent;
+	int *dist;
+	int order;
+	int size;
+	int source;
+} GraphObj;
+
 /*** Constructors-Destructors ***/
 
 // newGraph()
 // Returns a Graph pointing to a newly created GraphObj representing a graph having n vertices and no edges.
-Graph newGraph(int n);
+Graph newGraph(int n) {
+	Graph G = malloc(sizeof(GraphObj));
+	G->adjList = (List *) calloc(n+1, sizeof(List *));
+	G->color = (int *) calloc(n+1, sizeof(int *));
+	G->parent = (int *) calloc(n+1, sizeof(int *));
+	G->dist = (int *) calloc(n+1, sizeof(int *));
+	G->order = n;
+	G->size = 0;
+	G->source = NIL;
+	return (G);
+}
 
 // freeGraph()
 // Frees all heap memory associated with the Graph *pG, then sets the handle *pG to NULL.
-void freeGraph(Graph* pG);
+void freeGraph(Graph* pG) {
+	if(pG != NULL && *pG != NULL) {
+		for(int i = 0; i < (*pG)->order+1; i++) {
+			freeList(&(*pG)->adjList[i]);
+			(*pG)->adjList[i] = NULL;
+		}
+		free((*pG)->adjList);
+		free((*pG)->color);
+		free((*pG)->parent);
+		free((*pG)->dist);
+		(*pG)->adjList = NULL;
+		(*pG)->color = NULL;
+		(*pG)->parent = NULL;
+		(*pG)->dist = NULL;
+		
+		free(*pG);
+		*pG = NULL;
+	}
+}
 
 /*** Access functions ***/
 
 // getOrder()
 // Returns the order of the graph.
-int getOrder(Graph G);
+int getOrder(Graph G) {
+	if(G == NULL) {
+		fprintf(stderr, "Graph Error: calling getOrder with NULL Graph reference\n");
+	}
+	return(G->order);
+}
 
 // getSize()
 // Returns the size of the graph.
-int getSize(Graph G);
+int getSize(Graph G) {
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling getOrder with NULL Graph reference\n");
+        }
+	return(G->size);
+}
 
 // getSource()
 // Returns the source vertex most recently used in function BFS(), or NIL if BFS() has not yet been called.
-int getSource(Graph G);
+int getSource(Graph G) {
+	
+}
 
 // getParent()
 // Return the parent of vertex u in the Breadth-First tree created by BFS(), or NIL if BFS() has not yet been called.
