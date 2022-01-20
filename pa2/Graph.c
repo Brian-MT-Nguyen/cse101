@@ -32,12 +32,15 @@ typedef struct GraphObj {
 Graph newGraph(int n) {
 	Graph G = malloc(sizeof(GraphObj));
 	G->adjList = (List *) calloc(n+1, sizeof(List *));
-	for (int i = 1; i < n+1; i++) {
-		List adjList[i] = newList();
-	}
 	G->color = (int *) calloc(n+1, sizeof(int *));
 	G->parent = (int *) calloc(n+1, sizeof(int *));
 	G->dist = (int *) calloc(n+1, sizeof(int *));
+	for (int i = 1; i < n+1; i++) {
+                G->adjList[i] = newList();
+        	G->color[i] = 0;
+		G->parent[i] = NIL;
+		G->dist[i] = INF;
+	}
 	G->order = n;
 	G->size = 0;
 	G->source = NIL;
@@ -141,7 +144,7 @@ void getPath(List L, Graph G, int u) {
                 fprintf(stderr, "Graph Error: calling getPath() with vertex u out of range\n");
         }
         if(G->source == NIL) {
-                fprintf(stderr, "Graph Error: calling getPath() with unknown source vertex\n";
+                fprintf(stderr, "Graph Error: calling getPath() with unknown source vertex\n");
 	}
 	if(u == G->source) {
 		append(L, u);
