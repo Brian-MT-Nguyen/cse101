@@ -4,12 +4,14 @@
 * Graph.c
 * Graph ADT
 *********************************************************************************/
+#include "List.h"
 #include "Graph.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define NIL -7
+#define INF -7
+#define NIL 0
 /*** Structs ***/
 
 // private GraphObj type
@@ -30,6 +32,9 @@ typedef struct GraphObj {
 Graph newGraph(int n) {
 	Graph G = malloc(sizeof(GraphObj));
 	G->adjList = (List *) calloc(n+1, sizeof(List *));
+	for (int i = 1; i < n+1; i++) {
+		List adjList[i] = newList();
+	}
 	G->color = (int *) calloc(n+1, sizeof(int *));
 	G->parent = (int *) calloc(n+1, sizeof(int *));
 	G->dist = (int *) calloc(n+1, sizeof(int *));
@@ -43,7 +48,7 @@ Graph newGraph(int n) {
 // Frees all heap memory associated with the Graph *pG, then sets the handle *pG to NULL.
 void freeGraph(Graph* pG) {
 	if(pG != NULL && *pG != NULL) {
-		for(int i = 0; i < (*pG)->order+1; i++) {
+		for(int i = 1; i < (*pG)->order+1; i++) {
 			freeList(&(*pG)->adjList[i]);
 			(*pG)->adjList[i] = NULL;
 		}
@@ -76,7 +81,7 @@ int getOrder(Graph G) {
 // Returns the size of the graph.
 int getSize(Graph G) {
 	if(G == NULL) {
-                fprintf(stderr, "Graph Error: calling getOrder with NULL Graph reference\n");
+                fprintf(stderr, "Graph Error: calling getSize with NULL Graph reference\n");
         }
 	return(G->size);
 }
@@ -84,23 +89,71 @@ int getSize(Graph G) {
 // getSource()
 // Returns the source vertex most recently used in function BFS(), or NIL if BFS() has not yet been called.
 int getSource(Graph G) {
-	
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling getSource with NULL Graph reference\n");
+        }
+	if(G->source == NIL) {
+		return NIL;
+	}
+	return(G->source);
 }
 
 // getParent()
 // Return the parent of vertex u in the Breadth-First tree created by BFS(), or NIL if BFS() has not yet been called.
 // Pre: 1 ≤ u ≤ getOrder(G)
-int getParent(Graph G, int u);
+int getParent(Graph G, int u) {	
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling getParent() with NULL Graph reference\n");
+        }
+	if(u < 1 || u > getOrder(G)) {
+		fprintf(stderr, "Graph Error: calling getParent() with vertex u out of range\n");
+	}
+	if(G->source == NIL) {
+		return NIL;
+	}
+	return G->parent[u];
+}
 
 // getDist()
-// Returns the distance from the most recent BFS source to vertex u,or INF if BFS() has not yet been called.
+// Returns the distance from the most recent BFS source to vertex u, or INF if BFS() has not yet been called.
 // Pre: 1 ≤ u ≤ getOrder(G)
-int getDist(Graph G, int u);
+int getDist(Graph G, int u) {
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling getDist() with NULL Graph reference\n");
+        }
+	if(u < 1 || u > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling getDist() with vertex u out of range\n");
+        }
+	if(G->source == NIL) {
+		return INF;
+	}
+        return G->dist[u];	
+}
 
 // getPath()
 // Appends to the List L the vertices of a shortest path in G from source to u, or appends to L the value NIL if no such path exists.
 // Pre: 1 ≤ u ≤ getOrder(G), getSource(G)!=NIL
-void getPath(List L, Graph G, int u);
+void getPath(List L, Graph G, int u) {
+	if(G == NULL) {
+		fprintf(stderr, "Graph Error: calling getPath() with NULL Graph reference\n");
+	}
+	if(u < 1 || u > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling getPath() with vertex u out of range\n");
+        }
+        if(G->source == NIL) {
+                fprintf(stderr, "Graph Error: calling getPath() with unknown source vertex\n";
+	}
+	if(u == G->source) {
+		append(L, u);
+	}
+	else if(G->parent[u] == NIL) {
+		append(L, NIL);
+	}
+	else {
+		getPath(L, G, G->parent[u]);
+		append(L, u);
+	}
+}
 
 /*** Manipulation procedures ***/
 
@@ -127,4 +180,3 @@ void BFS(Graph G, int s);
 // printGraph()
 // Prints the adjacency list representation of G to the file pointed to by out.
 void printGraph(FILE* out, Graph G);
-

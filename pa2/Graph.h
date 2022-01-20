@@ -6,7 +6,14 @@
 *********************************************************************************/
 #pragma once
 
+#include "List.h"
 #include <stdio.h>
+
+#define INF -7
+#define NIL 0
+
+/*** Exported type ***/
+typedef struct GraphObj* Graph;
 
 /*** Constructors-Destructors ***/
 
