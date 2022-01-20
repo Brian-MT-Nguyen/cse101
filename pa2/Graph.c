@@ -76,6 +76,7 @@ void freeGraph(Graph* pG) {
 int getOrder(Graph G) {
 	if(G == NULL) {
 		fprintf(stderr, "Graph Error: calling getOrder with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
 	}
 	return(G->order);
 }
@@ -85,6 +86,7 @@ int getOrder(Graph G) {
 int getSize(Graph G) {
 	if(G == NULL) {
                 fprintf(stderr, "Graph Error: calling getSize with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
         }
 	return(G->size);
 }
@@ -94,6 +96,7 @@ int getSize(Graph G) {
 int getSource(Graph G) {
 	if(G == NULL) {
                 fprintf(stderr, "Graph Error: calling getSource with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
         }
 	if(G->source == NIL) {
 		return NIL;
@@ -107,9 +110,11 @@ int getSource(Graph G) {
 int getParent(Graph G, int u) {	
 	if(G == NULL) {
                 fprintf(stderr, "Graph Error: calling getParent() with NULL Graph reference\n");
+		exit(EXIT_FAILURE); 
         }
 	if(u < 1 || u > getOrder(G)) {
 		fprintf(stderr, "Graph Error: calling getParent() with vertex u out of range\n");
+		exit(EXIT_FAILURE);
 	}
 	if(G->source == NIL) {
 		return NIL;
@@ -123,9 +128,11 @@ int getParent(Graph G, int u) {
 int getDist(Graph G, int u) {
 	if(G == NULL) {
                 fprintf(stderr, "Graph Error: calling getDist() with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
         }
 	if(u < 1 || u > getOrder(G)) {
                 fprintf(stderr, "Graph Error: calling getDist() with vertex u out of range\n");
+		exit(EXIT_FAILURE);
         }
 	if(G->source == NIL) {
 		return INF;
@@ -139,12 +146,15 @@ int getDist(Graph G, int u) {
 void getPath(List L, Graph G, int u) {
 	if(G == NULL) {
 		fprintf(stderr, "Graph Error: calling getPath() with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
 	}
 	if(u < 1 || u > getOrder(G)) {
                 fprintf(stderr, "Graph Error: calling getPath() with vertex u out of range\n");
+		exit(EXIT_FAILURE);
         }
         if(G->source == NIL) {
                 fprintf(stderr, "Graph Error: calling getPath() with unknown source vertex\n");
+		exit(EXIT_FAILURE);
 	}
 	if(u == G->source) {
 		append(L, u);
@@ -162,24 +172,117 @@ void getPath(List L, Graph G, int u) {
 
 // makeNull()
 // Deletes all edges of G, restoring it to its original (no edge) state.
-void makeNull(Graph G);
+void makeNull(Graph G) {
+	for(int i = 1; i < G->order+1; i++) {
+		clear(G->adjList[i]);
+		G->color[i] = 0;
+		G->parent[i] = NIL;
+		G->dist[i] = INF;
+	}
+	G->size = 0;
+	G->source = NIL;
+}
 
 // addEdge()
 // Inserts a new edge joining u to v, i.e. u is added to the adjacency List of v, and v to the adjacency List of u.
 // Pre: u and v must be within 1 and getOrder(G)
-void addEdge(Graph G, int u, int v);
+void addEdge(Graph G, int u, int v) {
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling addEdge() with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
+        }
+	if(u < 1 || u > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling addEdge() with vertex u out of range\n");
+		exit(EXIT_FAILURE);
+        }
+	if(v < 1 || v > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling addEdge() with vertex v out of range\n");
+		exit(EXIT_FAILURE);
+        }
+	addArc(G, u, v);
+	addArc(G, v, u);
+	G->size -= 1;
+}
 
 // addArc()
 // Inserts a new directed edge from u to v, i.e. v is added to the adjacency List of u (but not u to the adjacency List of v).
 // Pre: u and v must be within 1 and getOrder(G)
-void addArc(Graph G, int u, int v);
+void addArc(Graph G, int u, int v) {
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling addArc() with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
+        }
+        if(u < 1 || u > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling addArc() with vertex u out of range\n");
+		exit(EXIT_FAILURE);
+        }
+        if(v < 1 || v > getOrder(G)) {
+                fprintf(stderr, "Graph Error: calling addArc() with vertex v out of range\n");
+		exit(EXIT_FAILURE);
+        }
+        moveBack(G->adjList[u]);
+	while ((index(G->adjList[u]) >= 0) && (v < get(G->adjList[u]))) {
+		movePrev(G->adjList[u]);
+	}
+	if (index(G->adjList[u]) == -1) {
+		prepend(G->adjList[u], v);
+	} else {
+		if(get(G->adjList[u]) == v) {
+                        return;
+                }
+		insertAfter(G->adjList[u], v);
+	}
+	G->size += 1;
+}
 
 // BFS()
 // Runs the BFS algorithm on the Graph G with source s, setting the color, distance, parent, and source fields of G accordingly.
-void BFS(Graph G, int s);
+void BFS(Graph G, int s) {
+	if(G == NULL) {
+                fprintf(stderr, "Graph Error: calling BFS() with NULL Graph reference\n");
+		exit(EXIT_FAILURE);
+        }
+	G->source = s;
+	for(int x = 1; x < G->order+1; x++) {
+		if(x == s) {
+			continue;
+		}
+		G->color[x] = 0;
+		G->dist[x] = INF;
+		G->parent[x] = NIL;
+	}
+	G->color[s] = 1;
+	G->dist[s] = 0;
+	G->parent[s] = NIL;
+	List Q = newList();
+	append(Q, s);
+	while(length(Q) > 0) {
+		int x = front(Q);
+		deleteFront(Q);
+		if(length(G->adjList[x]) > 0) {
+			for(moveFront(G->adjList[x]); index(G->adjList[x]) >= 0; moveNext(G->adjList[x])) {
+				int y = get(G->adjList[x]);
+				if(G->color[y] == 0) {
+					G->color[y] = 1;
+					G->dist[y] = G->dist[x] + 1;
+					G->parent[y] = x;
+					append(Q, y);
+				}
+			}
+		}
+		G->color[x] = 2;
+	}
+	freeList(&Q);
+}
 
 /*** Other operations ***/
 
 // printGraph()
 // Prints the adjacency list representation of G to the file pointed to by out.
-void printGraph(FILE* out, Graph G);
+void printGraph(FILE* out, Graph G) {
+	for(int i = 1; i < G->order+1; i++) {
+		fprintf(out, "%d: ", i);
+		printList(out, G->adjList[i]);
+		fprintf(out, "\n");
+	}
+}
