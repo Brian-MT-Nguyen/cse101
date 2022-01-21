@@ -29,12 +29,12 @@ List.o : List.c List.h
 	gcc -std=c17 -Wall -c List.c
 
 format:
-	find . -type f -path '*.[ch]' \! -name ListClient.c -exec clang-format -i -style=file {} \;
+	clang-format -i -style=file *.[ch]
 
 clean :
 	rm -f Lex ListClient Lex.o ListClient.o List.o
 
-checkClient : 
+checkClient :
 	valgrind --leak-check=full ListClient
 
 checkLex :
