@@ -3,7 +3,7 @@
  * 2022 Winter CSE101 PA2
  * FindPath.c
  * Finds the shortest path(s) of a graph using Breadth First Search and
- *adjacency lists of vertices
+ * adjacency lists of vertices
  *********************************************************************************/
 
 #include "Graph.h"
