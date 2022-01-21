@@ -34,9 +34,11 @@ $(BASE_OBJECTS) : $(BASE_SOURCES) $(HEADERS)
 clean :
 	$(REMOVE) FindPath GraphClient FindPath.o GraphClient.o $(BASE_OBJECTS)
 
+format:
+	clang-format -i -style=file *.[ch]
+
 checkFind : FindPath
 	$(MEMCHECK) FindPath in7 junk7
 
 checkClient : GraphClient
 	$(MEMCHECK) GraphClient
-
