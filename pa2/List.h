@@ -1,16 +1,16 @@
 /*********************************************************************************
-* Brian Nguyen, bnguy118
-* 2022 Winter CSE101 PA2
-* List.h
-* Header file for List ADT
-*********************************************************************************/
+ * Brian Nguyen, bnguy118
+ * 2022 Winter CSE101 PA2
+ * List.h
+ * Header file for List ADT
+ *********************************************************************************/
 #pragma once
 
 #include <stdbool.h>
 #include <stdio.h>
 
 // Exported type --------------------------------------------------------------
-typedef struct ListObj* List;
+typedef struct ListObj *List;
 
 // Constructors-Destructors ---------------------------------------------------
 
@@ -20,7 +20,7 @@ List newList(void);
 
 // freeList()
 // Frees all heap memory associated with *pL, and sets *pL to NULL.
-void freeList(List* pL);
+void freeList(List *pL);
 
 // Access functions -----------------------------------------------------------
 
@@ -48,7 +48,8 @@ int back(List L);
 int get(List L);
 
 // equals()
-// Returns true iff Lists A and B are in same state, and returns false otherwise.
+// Returns true iff Lists A and B are in same state, and returns false
+// otherwise.
 bool equals(List A, List B);
 
 // Manipulation procedures ----------------------------------------------------
@@ -63,11 +64,13 @@ void clear(List L);
 void set(List L, int x);
 
 // moveFront()
-// If L is non-empty, sets cursor under the front element, otherwise does nothing.
+// If L is non-empty, sets cursor under the front element, otherwise does
+// nothing.
 void moveFront(List L);
 
 // moveBack()
-// If L is non-empty, sets cursor under the back element, otherwise does nothing.
+// If L is non-empty, sets cursor under the back element, otherwise does
+// nothing.
 void moveBack(List L);
 
 // movePrev()
@@ -122,7 +125,7 @@ void delete (List L);
 // printList()
 // Prints to the file pointed to by out, a string representation of L consisting
 // of a space separated sequence of integers, with front on left.
-void printList(FILE* out, List L);
+void printList(FILE *out, List L);
 
 // copyList()
 // Returns a new List representing the same integer sequence as L. The cursor in
