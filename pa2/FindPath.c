@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   // line scan (for error handling)
   int input_doubles;
 
-  // scans through all lines that contain the two integer format and adds edges
+  // Scans through all lines that contain the two integer format and adds edges
   // to graph
   while (((input_doubles = fscanf(input_file, "%d %d\n", &source, &dest)) !=
           EOF) &&
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
   printGraph(output_file, G);
   fprintf(output_file, "\n");
 
-  // scans through all lines that contain the two integer format and prints
+  // Scans through all lines that contain the two integer format and prints
   // their paths via BFS
   while (((input_doubles = fscanf(input_file, "%d %d\n", &source, &dest)) !=
           EOF) &&
@@ -81,12 +81,12 @@ int main(int argc, char *argv[]) {
       fprintf(stderr, "Error: Invalid number of vertices");
       exit(EXIT_FAILURE);
     }
-    // uses BFS to discovered vertices/path and stores the path in P via
+    // Uses BFS to discovered vertices/path and stores the path in P via
     // getPath()
     BFS(G, source);
     getPath(P, G, dest);
 
-    // Prints distance and path to output files based on if real or
+    // Prints distance and path to output file based on if real or
     // infinite/non-existent
     if (getDist(G, dest) == INF) {
       fprintf(output_file, "The distance from %d to %d is infinity\n", source,
