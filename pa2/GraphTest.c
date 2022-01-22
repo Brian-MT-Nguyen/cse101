@@ -2,7 +2,7 @@
  * Brian Nguyen, bnguy118
  * 2022 Winter CSE101 PA2
  * GraphTest.c
- *
+ * Client Function to test functionality of Graph ADT
  *********************************************************************************/
 #define NIL 0
 #define INF -7
