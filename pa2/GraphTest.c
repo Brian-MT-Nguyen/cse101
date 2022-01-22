@@ -2,7 +2,7 @@
  * Brian Nguyen, bnguy118
  * 2022 Winter CSE101 PA2
  * GraphTest.c
- * Client Function to test functionality of Graph ADT
+ * Test Client to test functionality of Graph ADT
  *********************************************************************************/
 #define NIL 0
 #define INF -7
@@ -36,6 +36,7 @@ int main(void) {
   fprintf(stdout, "Test_printGraph: (Expected: 1: 2 3, 2: 1 3, 3: 1 2, 4: )\n");
   printGraph(stdout, G);
   fprintf(stdout, "\n");
+
   // Call BFS to make Paths
   BFS(G, 1);
 
