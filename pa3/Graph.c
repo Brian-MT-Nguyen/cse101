@@ -114,6 +114,7 @@ int getParent(Graph G, int u) {
   }
   return G->parent[u];
 }
+
 // getDiscover()
 // Returns iteration at which the vetex was discovered by DFS().
 // Pre: 1<=u<=n=getOrder(G)
