@@ -236,6 +236,14 @@ void Visit(Graph G, int x, int *time) {
 // Perform the depth first search algorithm on G.
 // Pre: length(S)==getOrder(G)
 void DFS(Graph G, List S) {
+  if (G == NULL) {
+    fprintf(stderr, "Graph Error: calling DFS() with NULL Graph reference\n");
+    exit(EXIT_FAILURE);
+  }
+  if (S == NULL) {
+    fprintf(stderr, "List Error: calling DFS() with NULL List reference\n");
+    exit(EXIT_FAILURE);
+  }
   if (length(S) != getOrder(G)) {
     fprintf(
         stderr,
@@ -274,6 +282,11 @@ void DFS(Graph G, List S) {
 // transpose()
 // Returns a reference to a new graph object representing the transpose of G.
 Graph transpose(Graph G) {
+  if (G == NULL) {
+    fprintf(stderr,
+            "Graph Error: calling transpose() with NULL Graph reference\n");
+    exit(EXIT_FAILURE);
+  }
   Graph T = newGraph(getOrder(G));
   for (int i = 1; i <= getOrder(G); i++) {
     moveFront(G->adjList[i]);
@@ -288,6 +301,11 @@ Graph transpose(Graph G) {
 // copyGraph()
 // Returns a reference to a new graph that is a copy of G.
 Graph copyGraph(Graph G) {
+  if (G == NULL) {
+    fprintf(stderr,
+            "Graph Error: calling copyGraph() with NULL Graph reference\n");
+    exit(EXIT_FAILURE);
+  }
   Graph C = newGraph(getOrder(G));
   for (int i = 1; i <= getOrder(G); i++) {
     moveFront(G->adjList[i]);
@@ -302,6 +320,11 @@ Graph copyGraph(Graph G) {
 // printGraph()
 // Prints the adjacency list representation of G to the file pointed to by out.
 void printGraph(FILE *out, Graph G) {
+  if (G == NULL) {
+    fprintf(stderr,
+            "Graph Error: calling transpose() with NULL Graph reference\n");
+    exit(EXIT_FAILURE);
+  }
   for (int i = 1; i < G->order + 1; i++) {
     fprintf(out, "%d: ", i);
     printList(out, G->adjList[i]);
