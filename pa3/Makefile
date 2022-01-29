@@ -39,6 +39,9 @@ $(BASE_OBJECTS) : $(BASE_SOURCES) $(HEADERS)
 clean :
 		$(REMOVE) FindComponents GraphClient FindComponents.o GraphClient.o $(BASE_OBJECTS)
 
+format:
+	clang-format -i -style=file *.[ch]
+
 checkFind : FindComponents
 		$(MEMCHECK) FindComponents in8 junk8
 
