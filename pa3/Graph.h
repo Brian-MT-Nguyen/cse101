@@ -1,9 +1,9 @@
 /*********************************************************************************
-* Brian Nguyen, bnguy118
-* 2022 Winter CSE101 PA3
-* Graph.h
-* Header file for Graph ADT
-*********************************************************************************/
+ * Brian Nguyen, bnguy118
+ * 2022 Winter CSE101 PA3
+ * Graph.h
+ * Header file for Graph ADT
+ *********************************************************************************/
 #pragma once
 
 #include "List.h"
@@ -22,8 +22,9 @@ typedef struct GraphObj *Graph;
 Graph newGraph(int n);
 
 // freeGraph()
-// Frees all heap memory associated with a graph and sets its Graph argument to NULL.
-void freeGraph(Graph* pG);
+// Frees all heap memory associated with a graph and sets its Graph argument to
+// NULL.
+void freeGraph(Graph *pG);
 
 // Access functions
 
@@ -81,4 +82,4 @@ Graph copyGraph(Graph G);
 
 // printGraph()
 // Prints the adjacency list representation of G to the file pointed to by out.
-void printGraph(FILE* out , Graph G);
+void printGraph(FILE *out, Graph G);
