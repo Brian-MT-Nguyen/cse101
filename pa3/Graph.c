@@ -215,7 +215,7 @@ void addEdge(Graph G, int u, int v) {
 
 // Visit()
 // Private Helper for DFS
-// Recursively visits all vertices in Graph G from vertex x
+// Recursively visits all vertices in Graph G from vertex x.
 void Visit(Graph G, int x, int *time) {
   (*time) += 1;
   G->discoverTime[x] = (*time);
