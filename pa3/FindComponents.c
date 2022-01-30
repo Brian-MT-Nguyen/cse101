@@ -5,7 +5,6 @@
  * Finds the strongest component(s) of a graph using Depth-First Search and
  * adjacency lists of vertices
  *********************************************************************************/
-
 #include "Graph.h"
 #include "List.h"
 #include <stdbool.h>
