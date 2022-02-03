@@ -8,6 +8,11 @@
 
 #include <stdio.h>
 
+// Exported type
+typedef struct MatrixObj *Matrix;
+
+// Constructors-Destructors
+
 // newMatrix()
 // Returns a reference to a new nXn Matrix object in the zero state.
 Matrix newMatrix(int n);
