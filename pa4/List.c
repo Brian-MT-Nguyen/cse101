@@ -15,7 +15,7 @@ typedef struct NodeObj *Node;
 
 // private NodeObj type
 typedef struct NodeObj {
-  int data;
+  void *data;
   Node prev;
   Node next;
 } NodeObj;
@@ -34,7 +34,7 @@ typedef struct ListObj {
 // newNode()
 // Returns reference to new Node object. Initializes prev, next, and data
 // fields.
-Node newNode(int data) {
+Node newNode(void *data) {
   Node N = malloc(sizeof(NodeObj));
   N->data = data;
   N->prev = NULL;
@@ -100,7 +100,7 @@ int index(List L) {
 // front()
 // Returns front element of L.
 // Pre: length()>0
-int front(List L) {
+void *front(List L) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling front() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -115,7 +115,7 @@ int front(List L) {
 // back()
 // Returns back element of L.
 // Pre: length()>0
-int back(List L) {
+void *back(List L) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling back() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -130,7 +130,7 @@ int back(List L) {
 // get()
 // Returns cursor element of L.
 // Pre: length()>0, index()>=0
-int get(List L) {
+void *get(List L) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling get() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -144,28 +144,6 @@ int get(List L) {
     exit(EXIT_FAILURE);
   }
   return (L->cursor->data);
-}
-
-// equals()
-// Returns true iff Lists A and B are in same state, and returns false
-// otherwise.
-bool equals(List A, List B) {
-  if (A == NULL || B == NULL) {
-    fprintf(
-        stderr,
-        "List Error: calling equals() on at least one NULL List reference\n");
-    exit(EXIT_FAILURE);
-  }
-  Node tempA = A->front;
-  Node tempB = B->front;
-  while (tempA != NULL && tempB != NULL) {
-    if (tempA->data != tempB->data) {
-      return false;
-    }
-    tempA = tempA->next;
-    tempB = tempB->next;
-  }
-  return (tempA == NULL && tempB == NULL);
 }
 
 // Manipulation procedures ----------------------------------------------------
@@ -187,7 +165,7 @@ void clear(List L) {
 // set()
 // Overwrites the cursor element’s data with x.
 // Pre: length()>0, index()>=0
-void set(List L, int x) {
+void set(List L, void *x) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling set() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -278,7 +256,7 @@ void moveNext(List L) {
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before
 // front element.
-void prepend(List L, int x) {
+void prepend(List L, void *x) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling prepend() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -303,7 +281,7 @@ void prepend(List L, int x) {
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after
 // back element.
-void append(List L, int x) {
+void append(List L, void *x) {
   if (L == NULL) {
     fprintf(stderr, "List Error: calling append() on NULL List reference\n");
     exit(EXIT_FAILURE);
@@ -325,7 +303,7 @@ void append(List L, int x) {
 // insertBefore()
 // Insert new element before cursor.
 // Pre: length()>0, index()>=0
-void insertBefore(List L, int x) {
+void insertBefore(List L, void *x) {
   if (L == NULL) {
     fprintf(stderr,
             "List Error: calling insertBefore() on NULL List reference\n");
@@ -356,7 +334,7 @@ void insertBefore(List L, int x) {
 // insertAfter()
 // Insert new element after cursor.
 // Pre: length()>0, index()>=0
-void insertAfter(List L, int x) {
+void insertAfter(List L, void *x) {
   if (L == NULL) {
     fprintf(stderr,
             "List Error: calling insertAfter() on NULL List reference\n");
@@ -473,39 +451,4 @@ void delete (List L) {
     L->index = -1;
     L->length -= 1;
   }
-}
-
-// Other operations -----------------------------------------------------------
-
-// printList()
-// Prints to the file pointed to by out, a string representation of L consisting
-// of a space separated sequence of integers, with front on left.
-void printList(FILE *out, List L) {
-  if (L == NULL) {
-    fprintf(stderr, "List Error: calling delete() on NULL List reference\n");
-    exit(EXIT_FAILURE);
-  }
-  Node tempL = L->front;
-  while (tempL != NULL) {
-    fprintf(out, "%d ", tempL->data);
-    tempL = tempL->next;
-  }
-}
-
-// copyList()
-// Returns a new List representing the same integer sequence as L. The cursor in
-// the new list is undefined, regardless of the state of the cursor in L. The
-// state of L is unchanged.
-List copyList(List L) {
-  if (L == NULL) {
-    fprintf(stderr, "List Error: calling delete() on NULL List reference\n");
-    exit(EXIT_FAILURE);
-  }
-  List nL = newList();
-  Node tempL = L->front;
-  while (tempL != NULL) {
-    append(nL, tempL->data);
-    tempL = tempL->next;
-  }
-  return (nL);
 }

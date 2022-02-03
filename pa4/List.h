@@ -35,22 +35,17 @@ int index(List L);
 // front()
 // Returns front element of L.
 // Pre: length()>0
-int front(List L);
+void *front(List L);
 
 // back()
 // Returns back element of L.
 // Pre: length()>0
-int back(List L);
+void *back(List L);
 
 // get()
 // Returns cursor element of L.
 // Pre: length()>0, index()>=0
-int get(List L);
-
-// equals()
-// Returns true iff Lists A and B are in same state, and returns false
-// otherwise.
-bool equals(List A, List B);
+void *get(List L);
 
 // Manipulation procedures ----------------------------------------------------
 
@@ -61,7 +56,7 @@ void clear(List L);
 // set()
 // Overwrites the cursor element’s data with x.
 // Pre: length()>0, index()>=0
-void set(List L, int x);
+void set(List L, void *x);
 
 // moveFront()
 // If L is non-empty, sets cursor under the front element, otherwise does
@@ -88,22 +83,22 @@ void moveNext(List L);
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before
 // front element.
-void prepend(List L, int x);
+void prepend(List L, void *x);
 
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after
 // back element.
-void append(List L, int x);
+void append(List L, void *x);
 
 // insertBefore()
 // Insert new element before cursor.
 // Pre: length()>0, index()>=0
-void insertBefore(List L, int x);
+void insertBefore(List L, void *x);
 
 // insertAfter()
 // Insert new element after cursor.
 // Pre: length()>0, index()>=0
-void insertAfter(List L, int x);
+void insertAfter(List L, void *x);
 
 // deleteFront()
 // Delete the front element.
@@ -119,16 +114,3 @@ void deleteBack(List L);
 // Delete cursor element, making cursor undefined.
 // Pre: length()>0, index()>=0
 void delete (List L);
-
-// Other operations -----------------------------------------------------------
-
-// printList()
-// Prints to the file pointed to by out, a string representation of L consisting
-// of a space separated sequence of integers, with front on left.
-void printList(FILE *out, List L);
-
-// copyList()
-// Returns a new List representing the same integer sequence as L. The cursor in
-// the new list is undefined, regardless of the state of the cursor in L. The
-// state of L is unchanged.
-List copyList(List L);
