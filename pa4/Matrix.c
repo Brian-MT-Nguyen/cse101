@@ -1,4 +1,4 @@
-/*dddd********************************************************************************
+/*********************************************************************************
  * Brian Nguyen, bnguy118
  * 2022 Winter CSE101 PA4
  * Matrix.c
@@ -252,25 +252,27 @@ Matrix scalarMult(double x, Matrix A) {
 // addList()
 // Returns a resultant list from adding 2 matrix row lists.
 // Private helper function
-List addList(List A, List B) {
-  List R = newList();
+void addList(Matrix M, List A, List B, int i) {
   moveFront(A);
   moveFront(B);
   while (index(A) >= 0 && index(B) >= 0) {
     if (((Entry)get(A))->column < ((Entry)get(B))->column) {
       Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
-      append(R, entryA);
+      append(M->rows[i], entryA);
+      M->nnz += 1;
       moveNext(A);
     } else if (((Entry)get(B))->column < ((Entry)get(A))->column) {
       Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
-      append(R, entryB);
+      append(M->rows[i], entryB);
+      M->nnz += 1;
       moveNext(B);
     } else if (((Entry)get(A))->column == ((Entry)get(B))->column) {
       if ((((Entry)get(A))->value + ((Entry)get(B))->value) != 0) {
         Entry entryS =
             newEntry(((Entry)get(A))->column,
                      (((Entry)get(A))->value + ((Entry)get(B))->value));
-        append(R, entryS);
+        append(M->rows[i], entryS);
+        M->nnz += 1;
       }
       moveNext(A);
       moveNext(B);
@@ -278,15 +280,16 @@ List addList(List A, List B) {
   }
   while (index(A) >= 0) {
     Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
-    append(R, entryA);
+    append(M->rows[i], entryA);
+    M->nnz += 1;
     moveNext(A);
   }
   while (index(B) >= 0) {
     Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
-    append(R, entryB);
+    append(M->rows[i], entryB);
+    M->nnz += 1;
     moveNext(B);
   }
-  return (R);
 }
 
 // sum()
@@ -303,43 +306,41 @@ Matrix sum(Matrix A, Matrix B) {
                     "dimensions do not match\n");
     exit(EXIT_FAILURE);
   }
-  Matrix R = newMatrix(A->size);
   if (A == B) {
-    R = scalarMult(2, A);
+    return (scalarMult(2, A));
   } else {
+    Matrix R = newMatrix(A->size);
     for (int i = 1; i <= A->size; i++) {
-      R->rows[i] = addList(A->rows[i], B->rows[i]);
-      for (moveFront(R->rows[i]); index(R->rows[i]) >= 0;
-           moveNext(R->rows[i])) {
-        R->nnz += 1;
-      }
+      addList(R, A->rows[i], B->rows[i], i);
     }
+    return (R);
   }
-  return (R);
 }
 
 // subList()
 // Returns a resultant list from subtracting 2 matrix row lists.
 // Private helper function
-List subList(List A, List B) {
-  List R = newList();
+void subList(Matrix M, List A, List B, int i) {
   moveFront(A);
   moveFront(B);
   while (index(A) >= 0 && index(B) >= 0) {
     if (((Entry)get(A))->column < ((Entry)get(B))->column) {
       Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
-      append(R, entryA);
+      append(M->rows[i], entryA);
+      M->nnz += 1;
       moveNext(A);
     } else if (((Entry)get(B))->column < ((Entry)get(A))->column) {
       Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
-      append(R, entryB);
+      append(M->rows[i], entryB);
+      M->nnz += 1;
       moveNext(B);
     } else if (((Entry)get(A))->column == ((Entry)get(B))->column) {
       if ((((Entry)get(A))->value - ((Entry)get(B))->value) != 0) {
         Entry entryS =
             newEntry(((Entry)get(A))->column,
                      (((Entry)get(A))->value - ((Entry)get(B))->value));
-        append(R, entryS);
+        append(M->rows[i], entryS);
+        M->nnz += 1;
       }
       moveNext(A);
       moveNext(B);
@@ -347,15 +348,16 @@ List subList(List A, List B) {
   }
   while (index(A) >= 0) {
     Entry entryA = newEntry(((Entry)get(A))->column, -((Entry)get(A))->value);
-    append(R, entryA);
+    append(M->rows[i], entryA);
+    M->nnz += 1;
     moveNext(A);
   }
   while (index(B) >= 0) {
     Entry entryB = newEntry(((Entry)get(B))->column, -((Entry)get(B))->value);
-    append(R, entryB);
+    append(M->rows[i], entryB);
+    M->nnz += 1;
     moveNext(B);
   }
-  return (R);
 }
 
 // diff()
@@ -377,11 +379,7 @@ Matrix diff(Matrix A, Matrix B) {
     return R;
   } else {
     for (int i = 1; i <= A->size; i++) {
-      R->rows[i] = subList(A->rows[i], B->rows[i]);
-      for (moveFront(R->rows[i]); index(R->rows[i]) >= 0;
-           moveNext(R->rows[i])) {
-        R->nnz += 1;
-      }
+      subList(R, A->rows[i], B->rows[i], i);
     }
   }
   return (R);
@@ -425,6 +423,9 @@ Matrix product(Matrix A, Matrix B) {
   Matrix R = newMatrix(A->size);
   Matrix T = transpose(B);
   for (int i = 1; i <= A->size; i++) {
+    if (length(A->rows[i]) == 0) {
+      continue;
+    }
     for (int j = 1; j <= T->size; j++) {
       changeEntry(R, i, j, vectorDot(A->rows[i], T->rows[j]));
     }
@@ -445,7 +446,7 @@ void printMatrix(FILE *out, Matrix M) {
       fprintf(out, "%d:", i);
     }
     for (moveFront(M->rows[i]); index(M->rows[i]) >= 0; moveNext(M->rows[i])) {
-      fprintf(out, " (%d, %f)", ((Entry)get(M->rows[i]))->column,
+      fprintf(out, " (%d, %.1f)", ((Entry)get(M->rows[i]))->column,
               ((Entry)get(M->rows[i]))->value);
     }
     if (length(M->rows[i]) > 0) {
