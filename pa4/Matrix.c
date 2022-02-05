@@ -230,8 +230,21 @@ Matrix transpose(Matrix A) {
 
 // scalarMult()
 // Returns a reference to a new Matrix object representing xA.
-Matrix scalarMult(double x, Matrix A) { printf("Lol"); }
-
+Matrix scalarMult(double x, Matrix A) {
+  if (A == NULL) {
+    fprintf(stderr,
+            "Matrix Error: calling equals() with NULL Matrix reference\n");
+    exit(EXIT_FAILURE);
+  }
+  Matrix R = newMatrix(A->size);
+  for (int i = 1; i <= A->size; i++) {
+    for (moveFront(A->rows[i]); index(A->rows[i]) >= 0; moveNext(A->rows[i])) {
+      changeEntry(R, i, ((Entry)get(A->rows[i]))->column,
+                  x * (((Entry)get(A->rows[i]))->value));
+    }
+  }
+  return (R);
+}
 // addList()
 // Returns a resultant list from adding 2 matrix row lists.
 // Private helper function
@@ -249,10 +262,12 @@ List addList(List A, List B) {
       append(R, entryB);
       moveNext(B);
     } else if (((Entry)get(A))->column == ((Entry)get(B))->column) {
-      Entry entryS =
-          newEntry(((Entry)get(A))->column,
-                   (((Entry)get(A))->value + ((Entry)get(B))->value));
-      append(R, entryS);
+      if ((((Entry)get(A))->value + ((Entry)get(B))->value) != 0) {
+        Entry entryS =
+            newEntry(((Entry)get(A))->column,
+                     (((Entry)get(A))->value + ((Entry)get(B))->value));
+        append(R, entryS);
+      }
       moveNext(A);
       moveNext(B);
     }
@@ -284,10 +299,15 @@ Matrix sum(Matrix A, Matrix B) {
     exit(EXIT_FAILURE);
   }
   Matrix R = newMatrix(A->size);
-  for (int i = 1; i <= A->size; i++) {
-    R->rows[i] = addList(A->rows[i], B->rows[i]);
-    for (moveFront(R->rows[i]); index(R->rows[i]) >= 0; moveNext(R->rows[i])) {
+  if (A == B) {
+    R = scalarMult(2, A);
+  } else {
+    for (int i = 1; i <= A->size; i++) {
+      R->rows[i] = addList(A->rows[i], B->rows[i]);
+      for (moveFront(R->rows[i]); index(R->rows[i]) >= 0;
+           moveNext(R->rows[i])) {
         R->nnz += 1;
+      }
     }
   }
   return (R);
@@ -311,15 +331,15 @@ Matrix product(Matrix A, Matrix B) { printf("Lol"); }
 // in that row. The double val will be rounded to 1 decimal point.
 void printMatrix(FILE *out, Matrix M) {
   for (int i = 1; i <= M->size; i++) {
-      if(length(M->rows[i]) > 0) {
-          fprintf(out, "%d:", i);
-      }
+    if (length(M->rows[i]) > 0) {
+      fprintf(out, "%d:", i);
+    }
     for (moveFront(M->rows[i]); index(M->rows[i]) >= 0; moveNext(M->rows[i])) {
       fprintf(out, " (%d, %f)", ((Entry)get(M->rows[i]))->column,
               ((Entry)get(M->rows[i]))->value);
     }
-    if(length(M->rows[i]) > 0) {
-    fprintf(out, "\n");
+    if (length(M->rows[i]) > 0) {
+      fprintf(out, "\n");
     }
   }
 }
