@@ -76,6 +76,7 @@ void freeMatrix(Matrix *pM) {
     *pM = NULL;
   }
 }
+
 // Access functions
 
 // size()
@@ -249,8 +250,9 @@ Matrix scalarMult(double x, Matrix A) {
   }
   return (R);
 }
+
 // addList()
-// Returns a resultant list from adding 2 matrix row lists.
+// Adds 2 matrix row lists and appends to Matrix.
 // Private helper function
 void addList(Matrix M, List A, List B, int i) {
   moveFront(A);
@@ -308,17 +310,16 @@ Matrix sum(Matrix A, Matrix B) {
   }
   if (A == B) {
     return (scalarMult(2, A));
-  } else {
-    Matrix R = newMatrix(A->size);
-    for (int i = 1; i <= A->size; i++) {
-      addList(R, A->rows[i], B->rows[i], i);
-    }
-    return (R);
   }
+  Matrix R = newMatrix(A->size);
+  for (int i = 1; i <= A->size; i++) {
+    addList(R, A->rows[i], B->rows[i], i);
+  }
+  return (R);
 }
 
 // subList()
-// Returns a resultant list from subtracting 2 matrix row lists.
+// Subtracts 2 matrix row lists and appends to Matrix.
 // Private helper function
 void subList(Matrix M, List A, List B, int i) {
   moveFront(A);
@@ -347,7 +348,7 @@ void subList(Matrix M, List A, List B, int i) {
     }
   }
   while (index(A) >= 0) {
-    Entry entryA = newEntry(((Entry)get(A))->column, -((Entry)get(A))->value);
+    Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
     append(M->rows[i], entryA);
     M->nnz += 1;
     moveNext(A);
@@ -377,10 +378,9 @@ Matrix diff(Matrix A, Matrix B) {
   Matrix R = newMatrix(A->size);
   if (A == B) {
     return R;
-  } else {
-    for (int i = 1; i <= A->size; i++) {
-      subList(R, A->rows[i], B->rows[i], i);
-    }
+  }
+  for (int i = 1; i <= A->size; i++) {
+    subList(R, A->rows[i], B->rows[i], i);
   }
   return (R);
 }
@@ -407,7 +407,7 @@ double vectorDot(List A, List B) {
 }
 
 // product()
-// Returns a reference to a new Matrix object representing AB
+// Returns a reference to a new Matrix object representing AB.
 // pre: size(A)==size(B)
 Matrix product(Matrix A, Matrix B) {
   if (A == NULL || B == NULL) {
@@ -434,6 +434,7 @@ Matrix product(Matrix A, Matrix B) {
   freeMatrix(&T);
   return (R);
 }
+
 // printMatrix()
 // Prints a string representation of Matrix M to filestream out. Zero rows
 // are not printed. Each non-zero row is represented as one line consisting
@@ -444,12 +445,11 @@ void printMatrix(FILE *out, Matrix M) {
   for (int i = 1; i <= M->size; i++) {
     if (length(M->rows[i]) > 0) {
       fprintf(out, "%d:", i);
-    }
-    for (moveFront(M->rows[i]); index(M->rows[i]) >= 0; moveNext(M->rows[i])) {
-      fprintf(out, " (%d, %.1f)", ((Entry)get(M->rows[i]))->column,
-              ((Entry)get(M->rows[i]))->value);
-    }
-    if (length(M->rows[i]) > 0) {
+      for (moveFront(M->rows[i]); index(M->rows[i]) >= 0;
+           moveNext(M->rows[i])) {
+        fprintf(out, " (%d, %.1f)", ((Entry)get(M->rows[i]))->column,
+                ((Entry)get(M->rows[i]))->value);
+      }
       fprintf(out, "\n");
     }
   }
