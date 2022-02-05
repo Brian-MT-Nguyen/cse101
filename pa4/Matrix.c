@@ -107,8 +107,8 @@ int equals(Matrix A, Matrix B) {
                     "Matrix reference\n");
     exit(EXIT_FAILURE);
   }
-  if(A == B) {
-      return 1;
+  if (A == B) {
+    return 1;
   }
   if ((A->size != B->size) || (A->nnz != B->nnz)) {
     return 0;
@@ -299,11 +299,12 @@ Matrix sum(Matrix A, Matrix B) {
     exit(EXIT_FAILURE);
   }
   if (A->size != B->size) {
-    fprintf(stderr, "Matrix Error: calling sum() when Matrix A and B dimensions do not match\n");
+    fprintf(stderr, "Matrix Error: calling sum() when Matrix A and B "
+                    "dimensions do not match\n");
     exit(EXIT_FAILURE);
   }
   Matrix R = newMatrix(A->size);
-  if (equals (A, B) == 1) {
+  if (A == B) {
     R = scalarMult(2, A);
   } else {
     for (int i = 1; i <= A->size; i++) {
@@ -345,32 +346,34 @@ List subList(List A, List B) {
     }
   }
   while (index(A) >= 0) {
-    Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
+    Entry entryA = newEntry(((Entry)get(A))->column, -((Entry)get(A))->value);
     append(R, entryA);
     moveNext(A);
   }
   while (index(B) >= 0) {
-    Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
+    Entry entryB = newEntry(((Entry)get(B))->column, -((Entry)get(B))->value);
     append(R, entryB);
     moveNext(B);
   }
   return (R);
 }
+
 // diff()
 // Returns a reference to a new Matrix object representing A-B.
 // pre: size(A)==size(B)
 Matrix diff(Matrix A, Matrix B) {
   if (A == NULL || B == NULL) {
-    fprintf(stderr, "Matrix Error: calling equals() with at least one NULL "
+    fprintf(stderr, "Matrix Error: calling diff() with at least one NULL "
                     "Matrix reference\n");
     exit(EXIT_FAILURE);
   }
   if (A->size != B->size) {
-    fprintf(stderr, "Matrix Error: Matrix A and B dimensions do not match\n");
+    fprintf(stderr, "Matrix Error: calling diff() when Matrix A and B "
+                    "dimensions do not match\n");
     exit(EXIT_FAILURE);
   }
   Matrix R = newMatrix(A->size);
-  if (equals (A, B) == 1) {
+  if (A == B) {
     return R;
   } else {
     for (int i = 1; i <= A->size; i++) {
@@ -383,11 +386,53 @@ Matrix diff(Matrix A, Matrix B) {
   }
   return (R);
 }
+
+// vectorDot()
+// Returns a resultant list from multiplying 2 matrix row lists.
+// Private helper function
+double vectorDot(List A, List B) {
+  double dotProduct = 0;
+  moveFront(A);
+  moveFront(B);
+  while (index(A) >= 0 && index(B) >= 0) {
+    if (((Entry)get(A))->column < ((Entry)get(B))->column) {
+      moveNext(A);
+    } else if (((Entry)get(B))->column < ((Entry)get(A))->column) {
+      moveNext(B);
+    } else if (((Entry)get(A))->column == ((Entry)get(B))->column) {
+      dotProduct += (((Entry)get(A))->value * ((Entry)get(B))->value);
+      moveNext(A);
+      moveNext(B);
+    }
+  }
+  return (dotProduct);
+}
+
 // product()
 // Returns a reference to a new Matrix object representing AB
 // pre: size(A)==size(B)
-Matrix product(Matrix A, Matrix B) { printf("Lol"); }
+Matrix product(Matrix A, Matrix B) {
+  if (A == NULL || B == NULL) {
+    fprintf(stderr, "Matrix Error: calling product() with at least one NULL "
+                    "Matrix reference\n");
+    exit(EXIT_FAILURE);
+  }
+  if (A->size != B->size) {
+    fprintf(stderr, "Matrix Error: calling product() when Matrix A and B "
+                    "dimensions do not match\n");
+    exit(EXIT_FAILURE);
+  }
+  Matrix R = newMatrix(A->size);
+  Matrix T = transpose(B);
+  for (int i = 1; i <= A->size; i++) {
+    for (int j = 1; j <= T->size; j++) {
+      changeEntry(R, i, j, vectorDot(A->rows[i], T->rows[j]));
+    }
+  }
 
+  freeMatrix(&T);
+  return (R);
+}
 // printMatrix()
 // Prints a string representation of Matrix M to filestream out. Zero rows
 // are not printed. Each non-zero row is represented as one line consisting
