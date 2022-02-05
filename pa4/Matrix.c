@@ -107,11 +107,12 @@ int equals(Matrix A, Matrix B) {
                     "Matrix reference\n");
     exit(EXIT_FAILURE);
   }
-
+  if(A == B) {
+      return 1;
+  }
   if ((A->size != B->size) || (A->nnz != B->nnz)) {
     return 0;
   }
-
   for (int i = 1; i <= A->size; i++) {
     List LA = A->rows[i];
     List LB = B->rows[i];
@@ -233,14 +234,17 @@ Matrix transpose(Matrix A) {
 Matrix scalarMult(double x, Matrix A) {
   if (A == NULL) {
     fprintf(stderr,
-            "Matrix Error: calling equals() with NULL Matrix reference\n");
+            "Matrix Error: calling scalarMult() with NULL Matrix reference\n");
     exit(EXIT_FAILURE);
   }
   Matrix R = newMatrix(A->size);
-  for (int i = 1; i <= A->size; i++) {
-    for (moveFront(A->rows[i]); index(A->rows[i]) >= 0; moveNext(A->rows[i])) {
-      changeEntry(R, i, ((Entry)get(A->rows[i]))->column,
-                  x * (((Entry)get(A->rows[i]))->value));
+  if (x != 0) {
+    for (int i = 1; i <= A->size; i++) {
+      for (moveFront(A->rows[i]); index(A->rows[i]) >= 0;
+           moveNext(A->rows[i])) {
+        changeEntry(R, i, ((Entry)get(A->rows[i]))->column,
+                    x * (((Entry)get(A->rows[i]))->value));
+      }
     }
   }
   return (R);
@@ -290,16 +294,16 @@ List addList(List A, List B) {
 // pre: size(A)==size(B)
 Matrix sum(Matrix A, Matrix B) {
   if (A == NULL || B == NULL) {
-    fprintf(stderr, "Matrix Error: calling equals() with at least one NULL "
+    fprintf(stderr, "Matrix Error: calling sum() with at least one NULL "
                     "Matrix reference\n");
     exit(EXIT_FAILURE);
   }
   if (A->size != B->size) {
-    fprintf(stderr, "Matrix Error: Matrix A and B dimensions do not match\n");
+    fprintf(stderr, "Matrix Error: calling sum() when Matrix A and B dimensions do not match\n");
     exit(EXIT_FAILURE);
   }
   Matrix R = newMatrix(A->size);
-  if (A == B) {
+  if (equals (A, B) == 1) {
     R = scalarMult(2, A);
   } else {
     for (int i = 1; i <= A->size; i++) {
@@ -313,11 +317,72 @@ Matrix sum(Matrix A, Matrix B) {
   return (R);
 }
 
+// subList()
+// Returns a resultant list from subtracting 2 matrix row lists.
+// Private helper function
+List subList(List A, List B) {
+  List R = newList();
+  moveFront(A);
+  moveFront(B);
+  while (index(A) >= 0 && index(B) >= 0) {
+    if (((Entry)get(A))->column < ((Entry)get(B))->column) {
+      Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
+      append(R, entryA);
+      moveNext(A);
+    } else if (((Entry)get(B))->column < ((Entry)get(A))->column) {
+      Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
+      append(R, entryB);
+      moveNext(B);
+    } else if (((Entry)get(A))->column == ((Entry)get(B))->column) {
+      if ((((Entry)get(A))->value - ((Entry)get(B))->value) != 0) {
+        Entry entryS =
+            newEntry(((Entry)get(A))->column,
+                     (((Entry)get(A))->value - ((Entry)get(B))->value));
+        append(R, entryS);
+      }
+      moveNext(A);
+      moveNext(B);
+    }
+  }
+  while (index(A) >= 0) {
+    Entry entryA = newEntry(((Entry)get(A))->column, ((Entry)get(A))->value);
+    append(R, entryA);
+    moveNext(A);
+  }
+  while (index(B) >= 0) {
+    Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
+    append(R, entryB);
+    moveNext(B);
+  }
+  return (R);
+}
 // diff()
 // Returns a reference to a new Matrix object representing A-B.
 // pre: size(A)==size(B)
-Matrix diff(Matrix A, Matrix B) { printf("Lol"); }
-
+Matrix diff(Matrix A, Matrix B) {
+  if (A == NULL || B == NULL) {
+    fprintf(stderr, "Matrix Error: calling equals() with at least one NULL "
+                    "Matrix reference\n");
+    exit(EXIT_FAILURE);
+  }
+  if (A->size != B->size) {
+    fprintf(stderr, "Matrix Error: Matrix A and B dimensions do not match\n");
+    exit(EXIT_FAILURE);
+  }
+  Matrix R = newMatrix(A->size);
+  if (equals (A, B) == 1) {
+    return R;
+  } else {
+    for (int i = 1; i <= A->size; i++) {
+      R->rows[i] = subList(A->rows[i], B->rows[i]);
+      for (moveFront(R->rows[i]); index(R->rows[i]) >= 0;
+           moveNext(R->rows[i])) {
+        R->nnz += 1;
+      }
+    }
+  }
+  return (R);
+}
 // product()
 // Returns a reference to a new Matrix object representing AB
 // pre: size(A)==size(B)
