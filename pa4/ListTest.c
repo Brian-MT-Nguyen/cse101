@@ -2,7 +2,7 @@
  * Brian Nguyen, bnguy118
  * 2022 Winter CSE101 PA4
  * ListTest.c
- * Test client for List ADT
+ * Test Client for List ADT
  *********************************************************************************/
 #include "List.h"
 #include <stdbool.h>
