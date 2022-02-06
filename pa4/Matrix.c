@@ -331,7 +331,7 @@ void subList(Matrix M, List A, List B, int i) {
       M->nnz += 1;
       moveNext(A);
     } else if (((Entry)get(B))->column < ((Entry)get(A))->column) {
-      Entry entryB = newEntry(((Entry)get(B))->column, ((Entry)get(B))->value);
+      Entry entryB = newEntry(((Entry)get(B))->column, -((Entry)get(B))->value);
       append(M->rows[i], entryB);
       M->nnz += 1;
       moveNext(B);
