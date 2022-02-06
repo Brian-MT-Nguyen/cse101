@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     changeEntry(A, row, column, value);
   }
 
-  //Scan entries for the B Matrix
+  // Scan entries for the B Matrix
   for (int i = 0; i < entriesB; i++) {
     inputEntries = fscanf(input_file, "%d %d %lf\n", &row, &column, &value);
     if (inputEntries != 3) {
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
   fprintf(output_file, "\n");
 
   // Print A+B
-  D = sum(A,B);
+  D = sum(A, B);
   fprintf(output_file, "A+B =\n");
   printMatrix(output_file, D);
   fprintf(output_file, "\n");
