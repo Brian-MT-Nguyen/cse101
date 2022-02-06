@@ -3,7 +3,7 @@
  * 2022 Winter CSE101 PA4
  * Sparse.c
  * Calculator that performs Matrix Operations on a sparse nXn matrix in List
- * representation.
+ * representation
  *********************************************************************************/
 #include "List.h"
 #include "Matrix.h"

@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
 # Brian Nguyen, bnguy118
-# 2022 Winter CSE 101 PA3
+# 2022 Winter CSE 101 PA4
 # Makefile
 # The makefile that runs and compilies the files to run the program of PA4
 # Also removes computer geneterated files, formats code, and checks for
