@@ -1,5 +1,10 @@
 #------------------------------------------------------------------------------
-#  Makefile for CSE 101 Programming Assignment 4
+# Brian Nguyen, bnguy118
+# 2022 Winter CSE 101 PA3
+# Makefile
+# The makefile that runs and compilies the files to run the program of PA4
+# Also removes computer geneterated files, formats code, and checks for
+# memory leaks in clients
 #
 #  make                     makes Sparse
 #  make MatrixTest          makes MatrixTest
