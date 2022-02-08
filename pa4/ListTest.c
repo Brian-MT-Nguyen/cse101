@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[]) {
+int main(void) {
 
   // Testing Constructors
   fprintf(stdout, "Testing Construction of List: newList() and Empty index() & "
@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
           "Used newList()...\nindex(): %d | Expected Value: -1\nlength(): %d | "
           "Expected Value: 0\n",
           index(A), length(B));
+  fprintf(stdout, "\n");
 
   char X[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
@@ -38,8 +39,7 @@ int main(int argc, char *argv[]) {
   for (moveFront(A); index(A) >= 0; moveNext(A)) {
     fprintf(stdout, "%c ", *(char *)get(A));
   }
-  fprintf(stdout, "\n");
-
+  fprintf(stdout, "\n\n");
   // Testing Prepend to List B
   fprintf(stdout, "Testing prepend() with same alphabet array:\n");
   for (int i = 0; i <= 25; i++) {
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   for (moveFront(B); index(B) >= 0; moveNext(B)) {
     fprintf(stdout, "%c ", *(char *)get(B));
   }
-  fprintf(stdout, "\n");
+  fprintf(stdout, "\n\n");
 
   // Printing both Lists from back to front
   fprintf(stdout, "Testing moveBack() by Printing Lists from back to front: "
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   for (moveBack(B); index(B) >= 0; movePrev(B)) {
     fprintf(stdout, "%c ", *(char *)get(B));
   }
-  fprintf(stdout, "\n");
+  fprintf(stdout, "\n\n");
 
   // Testing deleteFront(), deleteBack(), delete()
   fprintf(stdout, "Testing deleteFront(), deleteBack(), and delete() from List "
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
   for (moveFront(A); index(A) >= 0; moveNext(A)) {
     fprintf(stdout, "%c ", *(char *)get(A));
   }
-  fprintf(stdout, "\n");
+  fprintf(stdout, "\n\n");
 
   // Testing InsertBefore and InsertAfter
   fprintf(stdout, "Testing insertBefore() and insertAfter() with List A: "
@@ -97,18 +97,18 @@ int main(int argc, char *argv[]) {
   for (moveFront(A); index(A) >= 0; moveNext(A)) {
     fprintf(stdout, "%c ", *(char *)get(A));
   }
-  fprintf(stdout, "\n");
+  fprintf(stdout, "\n\n");
 
   // Testing set()
   moveFront(B);
   set(B, &X[1]);
   fprintf(stdout, "Testing set() with List B: (Expected Result: b)\n");
   fprintf(stdout, "%c ", *(char *)get(B));
-  fprintf(stdout, "\n");
+  fprintf(stdout, "\n\n");
 
   // Test freeList()
   fprintf(stdout, "Testing freeList() Check Valgrind\n");
   freeList(&A);
   freeList(&B);
-  return (0);
+  return (EXIT_SUCCESS);
 }
