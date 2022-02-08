@@ -11,126 +11,104 @@
 
 int main(int argc, char *argv[]) {
 
+  // Testing Constructors
+  fprintf(stdout, "Testing Construction of List: newList() and Empty index() & "
+                  "length():\n");
   List A = newList();
   List B = newList();
-  List C = newList();
-  int X[] = {0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
-             11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-  int i, u = -1, v = -2, w = -3;
-  bool equal = false;
 
-  // initialize Lists A and B
-  for (i = 1; i <= 20; i++) {
+  fprintf(stdout,
+          "Used newList()...\nindex(): %d | Expected Value: -1\nlength(): %d | "
+          "Expected Value: 0\n",
+          index(A), length(B));
+
+  char X[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+              'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+  // Testing Append to List A
+  fprintf(stdout, "Testing append() with char array data type:\n");
+  for (int i = 0; i <= 25; i++) {
     append(A, &X[i]);
+  }
+
+  // Printing List A from front to back
+  fprintf(stdout, "Testing moveFront(), moveNext(), Non-empty index(), and "
+                  "get() by Printing List A: (Expected Result = full alphabet "
+                  "a-z)\n");
+  for (moveFront(A); index(A) >= 0; moveNext(A)) {
+    fprintf(stdout, "%c ", *(char *)get(A));
+  }
+  fprintf(stdout, "\n");
+
+  // Testing Prepend to List B
+  fprintf(stdout, "Testing prepend() with same alphabet array:\n");
+  for (int i = 0; i <= 25; i++) {
     prepend(B, &X[i]);
   }
-
-  // print both lists of integers in forward direction
-  for (moveFront(A); index(A) >= 0; moveNext(A)) {
-    printf("%d ", *(int *)get(A));
-  }
-  printf("\n");
+  fprintf(stdout, "Printing List B: (Expected Result = full alphabet z-a)\n");
   for (moveFront(B); index(B) >= 0; moveNext(B)) {
-    printf("%d ", *(int *)get(B));
+    fprintf(stdout, "%c ", *(char *)get(B));
   }
-  printf("\n");
+  fprintf(stdout, "\n");
 
-  // print both lists of integers in backward direction
+  // Printing both Lists from back to front
+  fprintf(stdout, "Testing moveBack() by Printing Lists from back to front: "
+                  "(Expected Result is z-a and a-z respectively)\n");
   for (moveBack(A); index(A) >= 0; movePrev(A)) {
-    printf("%d ", *(int *)get(A));
+    fprintf(stdout, "%c ", *(char *)get(A));
   }
-  printf("\n");
+  fprintf(stdout, "\n");
   for (moveBack(B); index(B) >= 0; movePrev(B)) {
-    printf("%d ", *(int *)get(B));
+    fprintf(stdout, "%c ", *(char *)get(B));
   }
-  printf("\n");
+  fprintf(stdout, "\n");
 
-  // make a shallow copy of A
-  moveFront(A);
-  while (index(A) >= 0) {
-    append(C, get(A));
+  // Testing deleteFront(), deleteBack(), delete()
+  fprintf(stdout, "Testing deleteFront(), deleteBack(), and delete() from List "
+                  "A: (Expected Result: p)\n");
+  deleteFront(A);
+  deleteBack(A);
+  for (int i = 0; i < 14; i++) {
+    moveFront(A);
+    delete (A);
+  }
+  for (int i = 0; i < 9; i++) {
+    moveFront(A);
     moveNext(A);
+    delete (A);
   }
-  // print the copy in forward direction
-  for (moveFront(C); index(C) >= 0; moveNext(C)) {
-    printf("%d ", *(int *)get(C));
-  }
-  printf("\n");
-
-  // check shallow equality of A and C by comparing pointers
-  equal = (length(A) == length(C));
-  moveFront(A);
-  moveFront(C);
-  while (index(A) >= 0 && equal) {
-    equal = (get(A) == get(C));
-    moveNext(A);
-    moveNext(C);
-  }
-  printf("A equals C is %s\n", (equal ? "true" : "false"));
-
-  moveFront(A);
-  for (i = 0; i < 5; i++)
-    moveNext(A); // at index 5
-  printf("index(A)=%d\n", index(A));
-  insertBefore(A, &u); // now at index 6
-  printf("index(A)=%d\n", index(A));
-  for (i = 0; i < 9; i++)
-    moveNext(A); // at index 15
-  printf("index(A)=%d\n", index(A));
-  insertAfter(A, &v); // doesn't change index
-  printf("index(A)=%d\n", index(A));
-  for (i = 0; i < 5; i++)
-    movePrev(A); // at index 10
-  printf("index(A)=%d\n", index(A));
-  delete (A); // index is now undefined
-  printf("index(A)=%d\n", index(A));
-  moveBack(A); // now at index 20
-  printf("index(A)=%d\n", index(A));
-  for (i = 0; i < 10; i++)
-    movePrev(A); // at index 10
-  printf("index(A)=%d\n", index(A));
-  set(A, &w);
-
-  // print A in forward and backward direction
   for (moveFront(A); index(A) >= 0; moveNext(A)) {
-    printf("%d ", *(int *)get(A));
+    fprintf(stdout, "%c ", *(char *)get(A));
   }
-  printf("\n");
-  for (moveBack(A); index(A) >= 0; movePrev(A)) {
-    printf("%d ", *(int *)get(A));
+  fprintf(stdout, "\n");
+
+  // Testing InsertBefore and InsertAfter
+  fprintf(stdout, "Testing insertBefore() and insertAfter() with List A: "
+                  "(Expected Result: p u s h p b r o)\n");
+  moveBack(A);
+  insertBefore(A, &X[15]);
+  insertBefore(A, &X[20]);
+  insertBefore(A, &X[18]);
+  insertBefore(A, &X[7]);
+  moveBack(A);
+  insertAfter(A, &X[14]);
+  insertAfter(A, &X[17]);
+  insertAfter(A, &X[1]);
+  for (moveFront(A); index(A) >= 0; moveNext(A)) {
+    fprintf(stdout, "%c ", *(char *)get(A));
   }
-  printf("\n");
+  fprintf(stdout, "\n");
 
-  // check length of A, before and after clear()
-  printf("%d\n", length(A));
-  clear(A);
-  printf("%d\n", length(A));
+  // Testing set()
+  moveFront(B);
+  set(B, &X[1]);
+  fprintf(stdout, "Testing set() with List B: (Expected Result: b)\n");
+  fprintf(stdout, "%c ", *(char *)get(B));
+  fprintf(stdout, "\n");
 
+  // Test freeList()
+  fprintf(stdout, "Testing freeList() Check Valgrind\n");
   freeList(&A);
   freeList(&B);
-  freeList(&C);
-
   return (0);
 }
-
-/*
-   Output of this program:
-   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-   20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
-   20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
-   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-   A equals C is true
-   index(A)=5
-   index(A)=6
-   index(A)=15
-   index(A)=15
-   index(A)=10
-   index(A)=-1
-   index(A)=20
-   index(A)=10
-   1 2 3 4 5 -1 6 7 8 9 -3 12 13 14 15 -2 16 17 18 19 20
-   20 19 18 17 16 -2 15 14 13 12 -3 9 8 7 6 -1 5 4 3 2 1
-   21
-   0
-   */
