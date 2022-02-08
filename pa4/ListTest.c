@@ -10,7 +10,6 @@
 #include <stdlib.h>
 
 int main(void) {
-
   // Testing Constructors
   fprintf(stdout, "Testing Construction of List: newList() and Empty index() & "
                   "length():\n");
@@ -40,6 +39,7 @@ int main(void) {
     fprintf(stdout, "%c ", *(char *)get(A));
   }
   fprintf(stdout, "\n\n");
+
   // Testing Prepend to List B
   fprintf(stdout, "Testing prepend() with same alphabet array:\n");
   for (int i = 0; i <= 25; i++) {
