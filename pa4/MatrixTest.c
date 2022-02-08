@@ -13,12 +13,15 @@ int main() {
   int n = 100000;
   Matrix A = newMatrix(n);
   Matrix B = newMatrix(n);
-  Matrix C, D, E, F, G, H;
+  Matrix C, D, E, F, G, H, I, J, K, L;
 
+  // Test changeEntry()
   changeEntry(A, 1, 1, 1);
   changeEntry(B, 1, 1, 1);
   changeEntry(A, 1, 2, 2);
   changeEntry(B, 1, 2, 0);
+  changeEntry(A, 1, 3, 3);
+  changeEntry(A, 1, 3, 7);
   changeEntry(A, 1, 3, 3);
   changeEntry(B, 1, 3, 1);
   changeEntry(A, 2, 1, 4);
@@ -29,57 +32,88 @@ int main() {
   changeEntry(B, 2, 3, 0);
   changeEntry(A, 3, 1, 7);
   changeEntry(B, 3, 1, 1);
+  changeEntry(B, 3, 1, 0);
+  changeEntry(B, 3, 1, 6);
+  changeEntry(B, 3, 1, 1);
   changeEntry(A, 3, 2, 8);
   changeEntry(B, 3, 2, 1);
   changeEntry(A, 3, 3, 9);
   changeEntry(B, 3, 3, 1);
 
-  printf("%d\n", NNZ(A));
+  // Test NNZ()
+  fprintf(stdout, "NNZ(A): %d | Expected: 9\nTesting printMatrix(A): Expected: 1: (1, 1.0) (2, 2.0) (3, 3.0), 2: (1, 4.0) (2, 5.0) (3, 6.0), 3: (1, 7.0) (2, 8.0) (3, 9.0)\n", NNZ(A));
   printMatrix(stdout, A);
-  printf("\n");
+  fprintf(stdout, "\n");
 
-  printf("%d\n", NNZ(B));
+  fprintf(stdout, "Test NNZ(B): %d | Expected: 6\nTesting printMatrix(B): Expected: 1: (1, 1.0) (3, 1.0), 2: (2, 1.0), 3: (1, 1.0) (2, 1.0) (3, 1.0)\n", NNZ(B));
   printMatrix(stdout, B);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  // Test scalarMult()
+  fprintf(stdout, "Testing scalarMult(A): Expected: 1: (1, 1.5) (2, 3.0) (3, 4.5), 2: (1, 6.0) (2, 7.5) (3, 9.0), 3: (1, 10.5) (2, 12.0) (3, 13.5)\n");
   C = scalarMult(1.5, A);
-  printf("%d\n", NNZ(C));
   printMatrix(stdout, C);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  // Testing sum()
+  fprintf(stdout, "Testing sum(A, B): Expected: 1: (1, 2.0) (2, 2.0) (3, 4.0), 2: (1, 4.0) (2, 6.0) (3, 6.0), 3: (1, 8.0) (2, 9.0) (3, 10.0)\n");
   D = sum(A, B);
-  printf("%d\n", NNZ(D));
   printMatrix(stdout, D);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  fprintf(stdout, "Testing sum(A, A): Expected: 1: (1, 2.0) (2, 4.0) (3, 6.0), 2: (1, 8.0) (2, 10.0) (3, 12.0), 3: (1, 14.0) (2, 16.0) (3, 18.0)\n");
+  I = sum(A, A);
+  printMatrix(stdout, I);
+  fprintf(stdout, "\n");
+
+  // Testing diff()
+  fprintf(stdout, "Testing diff(A, B): Expected:\n");
+  J = diff(A, B);
+  printMatrix(stdout, J);
+  fprintf(stdout, "\n");
+
+  fprintf(stdout, "Testing diff(B, A): Expected:\n");
+  K = diff(B, A);
+  printMatrix(stdout, K);
+  fprintf(stdout, "\n");
+
+  fprintf(stdout, "Testing diff(A, A): Expected: Nothing\n");
   E = diff(A, A);
-  printf("%d\n", NNZ(E));
   printMatrix(stdout, E);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  fprintf(stdout, "Testing transpose(B): Expected:\n");
   F = transpose(B);
-  printf("%d\n", NNZ(F));
   printMatrix(stdout, F);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  fprintf(stdout, "Testing product(A,B): Expected:\n");
+  L = product(A, B);
+  printMatrix(stdout, K);
+  fprintf(stdout, "\n");
+
+  fprintf(stdout, "Testing product(B,B): Expected:\n");
   G = product(B, B);
-  printf("%d\n", NNZ(G));
   printMatrix(stdout, G);
-  printf("\n");
+  fprintf(stdout, "\n");
 
+  fprintf(stdout, "Testing copy(A): Expected:\n");
   H = copy(A);
-  printf("%d\n", NNZ(H));
   printMatrix(stdout, H);
-  printf("\n");
+  fprintf(stdout, "\n");
 
-  printf("%s\n", equals(A, H) ? "true" : "false");
-  printf("%s\n", equals(A, B) ? "true" : "false");
-  printf("%s\n", equals(A, A) ? "true" : "false");
+  fprintf(stdout, "Testing equals(): Expected: true, false, true\n");
+  fprintf(stdout, "%s\n", equals(A, H) ? "true" : "false");
+  fprintf(stdout, "%s\n", equals(A, B) ? "true" : "false");
+  fprintf(stdout, "%s\n", equals(A, A) ? "true" : "false");
 
+  fprintf(stdout, "Testing makeZero(A): Expected NNZ(A) = 0, Prints Nothing\n");
   makeZero(A);
-  printf("%d\n", NNZ(A));
+  fprintf(stdout, "NNZ(A): %d\n", NNZ(A));
   printMatrix(stdout, A);
 
+  // Testing freeMatrix()
+  fprintf(stdout, "Testing freeMatrix(): Check Valgrind");
   freeMatrix(&A);
   freeMatrix(&B);
   freeMatrix(&C);
@@ -88,7 +122,10 @@ int main() {
   freeMatrix(&F);
   freeMatrix(&G);
   freeMatrix(&H);
-
+  freeMatrix(&I);
+  freeMatrix(&J);
+  freeMatrix(&K);
+  freeMatrix(&L);
   return EXIT_SUCCESS;
 }
 
