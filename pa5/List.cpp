@@ -45,10 +45,10 @@ List::List(const List& L) {
 	num_elements = 0;
 
 	// load elements from L to this List
-	Node* N = L.backDummy;
+	Node* N = L.backDummy->prev;
 	while(N != frontDummy) {
-		N = N->prev;
 		this->insertAfter(N->data);
+		N = N->prev;
 	}
 }
 
