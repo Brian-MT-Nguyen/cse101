@@ -22,8 +22,8 @@ List::Node::Node(ListElement x) {
 
 // Creates a new Queue in the empty state.
 List::List() {
-	frontDummy = nullptr;
-	backDummy = nullptr;
+	frontDummy = new Node(7);
+	backDummy = new Node(16);
 	beforeCursor = nullptr;
 	afterCursor = nullptr;
 	pos_cursor = 0;
@@ -33,18 +33,18 @@ List::List() {
 // Copy constructor.
 List::List(const List& L) {
 	// initialize empty List
-	frontDummy = nullptr;
-	backDummy = nullptr;
+	frontDummy = new Node(7);
+	backDummy = new Node(16);
 	beforeCursor = nullptr;
 	afterCursor = nullptr;
 	pos_cursor = 0;
 	num_elements = 0;
 
 	// load elements from L to this List
-	Node* N = L.back;
-	while(N != nullptr) {
-		this->insertAfter(N->data);
+	Node* N = L.backDummy;
+	while(N != frontDummy) {
 		N = N->prev;
+		this->insertAfter(N->data);
 	}
 }
 
