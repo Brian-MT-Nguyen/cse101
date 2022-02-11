@@ -24,6 +24,8 @@ List::Node::Node(ListElement x) {
 List::List() {
 	frontDummy = new Node(7);
 	backDummy = new Node(16);
+	frontDummy->next = backDummy;
+	backDummy->prev = frontDummy;
 	beforeCursor = nullptr;
 	afterCursor = nullptr;
 	pos_cursor = 0;
@@ -35,6 +37,8 @@ List::List(const List& L) {
 	// initialize empty List
 	frontDummy = new Node(7);
 	backDummy = new Node(16);
+	frontDummy->next = backDummy;
+	backDummy->prev = frontDummy;
 	beforeCursor = nullptr;
 	afterCursor = nullptr;
 	pos_cursor = 0;
