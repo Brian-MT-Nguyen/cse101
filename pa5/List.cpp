@@ -119,6 +119,66 @@ ListElement List::peekPrev() const {
 // clear()
 // Deletes all elements in this List, setting it to the empty state.
 void List::clear() {
-
+	Node *N = backDummy->prev;
+	while(N != frontDummy) {
+		delete N;
+		N = N->prev;
+	}
+	frontDummy->next = backDummy;
+	backDummy->prev = frontDummy;
+	num_elements = 0;
+	pos_cursor = 0;
 }
 
+// moveFront()
+// Moves cursor to position 0 in this List.
+void List::moveFront() {
+	if(num_elements == 0) {
+		return;
+	}
+	beforeCursor = frontDummy;
+	afterCursor = frontDummy->next;
+	pos_cursor = 0;
+}
+
+// moveBack()
+// Moves cursor to position length() in this List.
+void List::moveBack() {
+	if(num_elements == 0) {
+		return;
+	}
+	beforeCursor = backDummy->prev;
+	afterCursor = backDummy;
+	pos_cursor = num_elements;
+}
+
+// moveNext()
+// Advances cursor to next higher position. Returns the List element that
+// was passed over.
+// pre: position()<length()
+ListElement List::moveNext() {
+	if(pos_cursor == num_elements) {
+		throw std::length_error("List: moveNext(): out of range");
+	}
+	beforeCursor = afterCursor;
+	afterCursor = afterCursor->next;
+	pos_cursor += 1;
+	return beforeCursor->data;
+}
+
+// movePrev()
+// Advances cursor to next lower position. Returns the List element that
+// was passed over.
+// pre: position()>0
+ListElement List::movePrev() {
+	if(pos_cursor == 0) {
+		throw std::length_error("List: movePrev(): out of range");
+	}
+	afterCursor = beforeCursor;
+	beforeCursor = beforeCursor->prev;
+	pos_cursor -= 1;
+	return afterCursor->data;
+}
+
+// insertAfter()
+// Inserts x after cursor.

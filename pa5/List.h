@@ -39,7 +39,7 @@ private:
 public:
 
    // Class Constructors & Destructors ----------------------------------------
-   
+
    // Creates new List in the empty state.
    List();
 
@@ -97,13 +97,13 @@ public:
 
    // moveNext()
    // Advances cursor to next higher position. Returns the List element that
-   // was passed over. 
-   // pre: position()<length() 
+   // was passed over.
+   // pre: position()<length()
    ListElement moveNext();
 
    // movePrev()
    // Advances cursor to next lower position. Returns the List element that
-   // was passed over. 
+   // was passed over.
    // pre: position()>0
    ListElement movePrev();
 
@@ -139,36 +139,36 @@ public:
    // Other Functions ---------------------------------------------------------
 
    // findNext()
-   // Starting from the current cursor position, performs a linear search (in 
+   // Starting from the current cursor position, performs a linear search (in
    // the direction front-to-back) for the first occurrence of element x. If x
-   // is found, places the cursor immediately after the found element, then 
-   // returns the final cursor position. If x is not found, places the cursor 
-   // at position length(), and returns -1. 
+   // is found, places the cursor immediately after the found element, then
+   // returns the final cursor position. If x is not found, places the cursor
+   // at position length(), and returns -1.
    int findNext(ListElement x);
 
    // findPrev()
-   // Starting from the current cursor position, performs a linear search (in 
+   // Starting from the current cursor position, performs a linear search (in
    // the direction back-to-front) for the first occurrence of element x. If x
    // is found, places the cursor immediately before the found element, then
-   // returns the final cursor position. If x is not found, places the cursor 
-   // at position 0, and returns -1. 
+   // returns the final cursor position. If x is not found, places the cursor
+   // at position 0, and returns -1.
    int findPrev(ListElement x);
 
    // cleanup()
    // Removes any repeated elements in this List, leaving only unique elements.
-   // The order of the remaining elements is obtained by retaining the frontmost 
-   // occurrance of each element, and removing all other occurances. The cursor 
-   // is not moved with respect to the retained elements, i.e. it lies between 
+   // The order of the remaining elements is obtained by retaining the frontmost
+   // occurrance of each element, and removing all other occurances. The cursor
+   // is not moved with respect to the retained elements, i.e. it lies between
    // the same two retained elements that it did before cleanup() was called.
    void cleanup();
- 
+
    // concat()
    // Returns a new List consisting of the elements of this List, followed by
    // the elements of L. The cursor in the returned List will be at postion 0.
    List concat(const List& L) const;
 
    // to_string()
-   // Returns a string representation of this List consisting of a comma 
+   // Returns a string representation of this List consisting of a comma
    // separated sequence of elements, surrounded by parentheses.
    std::string to_string() const;
 
@@ -179,13 +179,13 @@ public:
 
 
    // Overriden Operators -----------------------------------------------------
-   
+
    // operator<<()
    // Inserts string representation of L into stream.
    friend std::ostream& operator<<( std::ostream& stream, const List& L );
 
    // operator==()
-   // Returns true if and only if A is the same integer sequence as B. The 
+   // Returns true if and only if A is the same integer sequence as B. The
    // cursors in both Lists are unchanged.
    friend bool operator==( const List& A, const List& B );
 
