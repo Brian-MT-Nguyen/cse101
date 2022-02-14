@@ -301,12 +301,16 @@ int List::findPrev(ListElement x) {
 void List::cleanup() {
 	Node *S = frontDummy->next;
 	Node *D;
+	bool stillBefore = true;
 	while(S != backDummy) {
 		D = S;
 		while(D->next != backDummy) {
 			if(D->next->data == S->data) {
-				if(D->next == beforeCursor) {
-					beforeCursor = beforeCursor->prev;
+				if(stillBefore == true) {
+					if(D->next == beforeCursor) {
+						beforeCursor = beforeCursor->prev;
+						stillBefore = false;
+					}
 					pos_cursor -= 1;
 				}
 				if(D->next == afterCursor) {
@@ -319,6 +323,9 @@ void List::cleanup() {
 				num_elements -= 1;
 			}
 			else {
+				if(D->next == beforeCursor) {
+					stillBefore = false;
+				}
 				D = D->next;
 			}
 		}
@@ -331,5 +338,6 @@ void List::cleanup() {
 // the elements of L. The cursor in the returned List will be at postion 0.
 List List::concat(const List& L) const {
 	List K;
+
 	return K;
 }
