@@ -45,11 +45,12 @@ List::List(const List& L) {
 	num_elements = 0;
 
 	// load elements from L to this List
-	Node* N = L.backDummy->prev;
-	while(N != frontDummy) {
-		this->insertAfter(N->data);
-		N = N->prev;
+	Node* N = L.frontDummy->next;
+	while(N != L.backDummy) {
+		this->insertBefore(N->data);
+		N = N->next;
 	}
+	moveFront();
 }
 
 // Destructor
@@ -101,7 +102,7 @@ int List::position() const {
 // pre: position()<length()
 ListElement List::peekNext() const {
 	if(pos_cursor == num_elements) {
-		throw std::length_error("List: peekNext(): out of range");
+		throw std::range_error("List: peekNext(): out of range");
 	}
 	return afterCursor->data;
 }
@@ -111,7 +112,7 @@ ListElement List::peekNext() const {
 // pre: position()>0
 ListElement List::peekPrev() const {
 	if(pos_cursor == 0) {
-		throw std::length_error("List: peekPrev(): out of range");
+		throw std::range_error("List: peekPrev(): out of range");
 	}
 	return beforeCursor->data;
 }
@@ -160,7 +161,7 @@ void List::moveBack() {
 // pre: position()<length()
 ListElement List::moveNext() {
 	if(pos_cursor == num_elements) {
-		throw std::length_error("List: moveNext(): out of range");
+		throw std::range_error("List: moveNext(): out of range");
 	}
 	beforeCursor = afterCursor;
 	afterCursor = afterCursor->next;
@@ -174,7 +175,7 @@ ListElement List::moveNext() {
 // pre: position()>0
 ListElement List::movePrev() {
 	if(pos_cursor == 0) {
-		throw std::length_error("List: movePrev(): out of range");
+		throw std::range_error("List: movePrev(): out of range");
 	}
 	afterCursor = beforeCursor;
 	beforeCursor = beforeCursor->prev;
@@ -212,7 +213,7 @@ void List::insertBefore(ListElement x) {
 // pre: position()<length()
 void List::setAfter(ListElement x) {
 	if(pos_cursor == num_elements) {
-		throw std::length_error("List: setAfter(): out of range");
+		throw std::range_error("List: setAfter(): out of range");
 	}
 	afterCursor->data = x;
 }
@@ -222,7 +223,7 @@ void List::setAfter(ListElement x) {
 // pre: position()>0
 void List::setBefore(ListElement x) {
 	if(pos_cursor == 0) {
-		throw std::length_error("List: setBefore(): out of range");
+		throw std::range_error("List: setBefore(): out of range");
 	}
 	beforeCursor->data = x;
 }
@@ -232,7 +233,7 @@ void List::setBefore(ListElement x) {
 // pre: position()<length()
 void List::eraseAfter() {
 	if(pos_cursor == num_elements) {
-		throw std::length_error("List: eraseAfter(): out of range");
+		throw std::range_error("List: eraseAfter(): out of range");
 	}
 	beforeCursor->next = afterCursor->next;
 	afterCursor->next->prev = beforeCursor;
@@ -246,7 +247,7 @@ void List::eraseAfter() {
 // pre: position()>0
 void List::eraseBefore() {
 	if(pos_cursor == 0) {
-		throw std::length_error("List: eraseBefore(): out of range");
+		throw std::range_error("List: eraseBefore(): out of range");
 	}
 	afterCursor->prev = beforeCursor->prev;
 	beforeCursor->prev->next = afterCursor;
@@ -301,9 +302,12 @@ int List::findPrev(ListElement x) {
 void List::cleanup() {
 	Node *S = frontDummy->next;
 	Node *D;
-	bool stillBefore = true;
+	bool stillBefore;
 	while(S != backDummy) {
 		D = S;
+		if(D != beforeCursor) {
+			stillBefore = true;
+		}
 		while(D->next != backDummy) {
 			if(D->next->data == S->data) {
 				if(stillBefore == true) {
@@ -338,6 +342,80 @@ void List::cleanup() {
 // the elements of L. The cursor in the returned List will be at postion 0.
 List List::concat(const List& L) const {
 	List K;
-
+	Node *T = this->frontDummy->next;
+	Node *N = L.frontDummy->next;
+	while(T != this->backDummy) {
+		K.insertBefore(T->data);
+		T = T->next;
+	}
+	while(N != L.backDummy) {
+		K.insertBefore(N->data);
+		N = N->next;
+	}
+	K.moveFront();
 	return K;
+}
+
+// to_string()
+// Returns a string representation of this List consisting of a comma
+// separated sequence of elements, surrounded by parentheses.
+std::string List::to_string() const {
+	Node *N = nullptr;
+	std::string s = "(";
+	for(N = frontDummy->next; N != backDummy->prev; N = N->next){
+		s += std::to_string(N->data)+ ", ";
+	}
+	s += std::to_string(N->data)+ ")";
+	return s;
+}
+
+// equals()
+// Returns true if and only if this List is the same integer sequence as R.
+// The cursors in this List and in R are unchanged.
+bool List::equals(const List& R) const {
+	bool eq = false;
+	Node* N = nullptr;
+	Node* M = nullptr;
+
+	eq = (this->num_elements == R.num_elements);
+	N = this->frontDummy->next;
+	M = R.frontDummy->next;
+	while(eq && N != backDummy){
+		eq = (N->data == M->data);
+		N = N->next;
+		M = M->next;
+	}
+	return eq;
+}
+
+// Overriden Operators -----------------------------------------------------
+
+// operator<<()
+// Inserts string representation of L into stream.
+std::ostream& operator<<( std::ostream& stream, const List& L ) {
+	return stream << L.List::to_string();
+}
+
+// operator==()
+// Returns true if and only if A is the same integer sequence as B. The
+// cursors in both Lists are unchanged.
+bool operator==( const List& A, const List& B ) {
+	return A.List::equals(B);
+}
+
+// operator=()
+// Overwrites the state of this List with state of L.
+List& List::operator=( const List& L ) {
+	if( this != &L ){ // not self assignment
+		// make a copy of L
+  		List temp = L;
+
+		// then swap the copy's fields with fields of this
+		std::swap(frontDummy, temp.frontDummy);
+		std::swap(backDummy, temp.backDummy);
+		std::swap(num_elements, temp.num_elements);
+	}
+
+	   // return this with the new data installed
+	   return *this;
 }
