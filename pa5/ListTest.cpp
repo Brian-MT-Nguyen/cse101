@@ -51,7 +51,7 @@ int main(){
       cout << B.movePrev() << " ";
    }
    cout << endl << "B.position() = " << B.position() << endl;
-   
+
    cout << endl << "C: ";
    for(i=1; i<=7; i++){
       cout << C.moveNext() << " ";
@@ -75,8 +75,8 @@ int main(){
    B.eraseBefore();
    B.eraseAfter();
    cout << B << endl;
-   cout << B.position() << endl; 
-   cout << B.findNext(20) << endl; 
+   cout << B.position() << endl;
+   cout << B.findNext(20) << endl;
    cout << B.position() << endl;
    cout << B.findPrev(20) << endl;
    cout << B.position() << endl;
@@ -110,7 +110,7 @@ int main(){
    for( i=1; i<=7; i++){
       cout << "peekNext: " << F.peekNext() << endl;
       F.insertBefore(-i);
-      cout << F.moveNext() << endl; 
+      cout << F.moveNext() << endl;
    }
    cout << "F = " << F << endl;
 
