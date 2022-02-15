@@ -45,12 +45,11 @@ List::List(const List& L) {
 	num_elements = 0;
 
 	// load elements from L to this List
-	Node* N = L.frontDummy->next;
-	while(N != L.backDummy) {
-		this->insertBefore(N->data);
-		N = N->next;
+	Node* N = L.backDummy->prev;
+	while(N != L.frontDummy) {
+		this->insertAfter(N->data);
+		N = N->prev;
 	}
-	moveFront();
 }
 
 // Destructor
@@ -303,14 +302,16 @@ void List::cleanup() {
 	Node *S = frontDummy->next;
 	Node *D;
 	bool stillBefore;
+	bool nowAfter = false;
 	while(S != backDummy) {
 		D = S;
-		if(D != beforeCursor) {
-			stillBefore = true;
+		stillBefore = true;
+		if(S == afterCursor) {
+			nowAfter = true;
 		}
 		while(D->next != backDummy) {
 			if(D->next->data == S->data) {
-				if(stillBefore == true) {
+				if(stillBefore == true && nowAfter == false) {
 					if(D->next == beforeCursor) {
 						beforeCursor = beforeCursor->prev;
 						stillBefore = false;
