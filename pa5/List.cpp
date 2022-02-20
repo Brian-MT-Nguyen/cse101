@@ -365,8 +365,7 @@ std::string List::to_string() const {
 // The cursors in this List and in R are unchanged.
 bool List::equals(const List &R) const {
   bool eq = false;
-  Node *N = nullptr;
-  Node *M = nullptr;
+  Node *N = nullptr;  Node *M = nullptr;
 
   eq = (this->num_elements == R.num_elements);
   N = this->frontDummy->next;
