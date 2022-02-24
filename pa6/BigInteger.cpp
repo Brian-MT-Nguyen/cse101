@@ -5,6 +5,7 @@
  * BigInteger ADT
  *********************************************************************************/
 #include<iostream>
+#include<stdexcept>
 #include<string>
 #include"List.h"
 #include"BigInteger.h"
@@ -42,8 +43,8 @@ BigInteger::BigInteger(std::string s) {
 			throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
 		}
 	}
-
 	std::string c = s;
+	std::cout << c << std::endl;
 	signum = 1;
 	if(c[0] == '+') {
 		c.erase(0,1);
@@ -53,16 +54,20 @@ BigInteger::BigInteger(std::string s) {
 		c.erase(0,1);
 	}
 	if(c.length() % power != 0) {
-		int feLength = (c.length() % power) - 1;
-		long firstEntry = std::stol(c.substr(0, feLength), nullptr, base);
+		int feLength = (c.length() % power);
+		std::string e = c.substr(0, feLength);
+		long firstEntry = std::stol(e);
 		digits.insertBefore(firstEntry);
+		std::cout << digits << std::endl;
 		c.erase(0, feLength);
 	}
 	while(c.length() > 0) {
-		long Entry = std::stol(c.substr(0, (power - 1)), nullptr, base);
+		std::string e = c.substr(0, (power));
+		long Entry = std::stol(e);
 		digits.insertBefore(Entry);
-		c.erase(0, (power - 1));
+		c.erase(0, (power));
 	}
+	std::cout << digits << std::endl;
 }
 
 // BigInteger()
@@ -90,10 +95,24 @@ int BigInteger::sign() const {
 // greater than N or equal to N, respectively.
 int BigInteger::compare(const BigInteger& N) const {
 	int comp = 0;
+	std::cout << this->digits << std::endl;
+	std::cout << N.digits << std::endl;
 	List T = this->digits;
 	List L = N.digits;
 	T.moveFront();
 	L.moveFront();
+	if((T.length() > L.length()) && (this->signum == 1)) {
+		comp = 1;
+	}
+	else if((T.length() > L.length()) && (this->signum == -1)) {
+		comp = -1;
+	}
+	else if((T.length() < L.length()) && (N.signum == 1)) {
+		comp = -1;
+	}
+	else if((T.length() < L.length()) && (N.signum == -1)) {
+		comp = 1;
+	}
 
 	while((comp == 0) && (T.position() < T.length()) && (L.position() < L.length())) {
 		int thisElement = T.moveNext()*(this->signum);
@@ -104,18 +123,6 @@ int BigInteger::compare(const BigInteger& N) const {
 		else if((thisElement - LElement) < 0) {
 			comp = -1;
 		}
-	}
-	if((T.position() < T.length()) && (this->signum == 1)) {
-		comp = 1;
-	}
-	else if((T.position() < T.length()) && (this->signum == -1)) {
-		comp = -1;
-	}
-	else if((L.position() < L.length()) && (N.signum == 1)) {
-		comp = -1;
-	}
-	else if((L.position() < L.length()) && (N.signum == -1)) {
-		comp = 1;
 	}
 	return comp;
 }
@@ -145,5 +152,50 @@ void BigInteger::negate() {
 // operator<<()
 // Inserts string representation of N into stream.
 std::ostream& operator<<( std::ostream& stream, BigInteger N ) {
-	return stream << N.digits;
+	return stream << "yo";
+}
+
+// operator==()
+// Returns true if and only if A equals B.
+bool operator==( const BigInteger& A, const BigInteger& B ) {
+	if(A.compare(B) == 0) {
+		return true;
+	}
+	return false;
+}
+
+// operator<()
+// Returns true if and only if A is less than B.
+bool operator<( const BigInteger& A, const BigInteger& B ) {
+	if(A.compare(B) == -1) {
+		return true;
+	}
+	return false;
+}
+
+// operator<=()
+// Returns true if and only if A is less than or equal to B.
+bool operator<=( const BigInteger& A, const BigInteger& B ) {
+	if(A.compare(B) <= 0) {
+		return true;
+	}
+	return false;
+}
+
+// operator>()
+// Returns true if and only if A is greater than B.
+bool operator>( const BigInteger& A, const BigInteger& B ) {
+	if(A.compare(B) == 1) {
+		return true;
+	}
+	return false;
+}
+
+// operator>=()
+// Returns true if and only if A is greater than or equal to B.
+bool operator>=( const BigInteger& A, const BigInteger& B ) {
+	if(A.compare(B) >= 0) {
+		return true;
+	}
+	return false;
 }
