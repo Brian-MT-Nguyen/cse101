@@ -44,7 +44,6 @@ BigInteger::BigInteger(std::string s) {
 		}
 	}
 	std::string c = s;
-	std::cout << c << std::endl;
 	signum = 1;
 	if(c[0] == '+') {
 		c.erase(0,1);
@@ -58,7 +57,6 @@ BigInteger::BigInteger(std::string s) {
 		std::string e = c.substr(0, feLength);
 		long firstEntry = std::stol(e);
 		digits.insertBefore(firstEntry);
-		std::cout << digits << std::endl;
 		c.erase(0, feLength);
 	}
 	while(c.length() > 0) {
@@ -67,18 +65,14 @@ BigInteger::BigInteger(std::string s) {
 		digits.insertBefore(Entry);
 		c.erase(0, (power));
 	}
-	std::cout << digits << std::endl;
 }
 
 // BigInteger()
 // Constructor that creates a copy of N.
 BigInteger::BigInteger(const BigInteger& N) {
-	//make empty state
-	signum = 0;
-	List digits;
-
-	//load N's digits into this digits
-   	digits = N.digits;
+	//Copy N's state
+	signum = N.signum;
+	digits = N.digits;
 }
 
 // Access functions --------------------------------------------------------
@@ -95,8 +89,6 @@ int BigInteger::sign() const {
 // greater than N or equal to N, respectively.
 int BigInteger::compare(const BigInteger& N) const {
 	int comp = 0;
-	std::cout << this->digits << std::endl;
-	std::cout << N.digits << std::endl;
 	List T = this->digits;
 	List L = N.digits;
 	T.moveFront();
@@ -147,12 +139,37 @@ void BigInteger::negate() {
 
 // Other Functions ---------------------------------------------------------
 
+// to_string()
+// Returns a string representation of this BigInteger consisting of its
+// base 10 digits. If this BigInteger is negative, the returned string
+// will begin with a negative sign '-'. If this BigInteger is zero, the
+// returned string will consist of the character '0' only.
+std::string BigInteger::to_string() {
+	std::string s = "";
+	if(this->signum == 0) {
+		s += "0";
+		return s;
+	}
+	if(this->signum == -1) {
+		s += "-";
+	}
+	List L = this->digits;
+	L.moveFront();
+	s+= std::to_string(L.moveNext());
+	while(L.position() < L.length()) {
+		std::string pad = std::to_string(L.moveNext());
+		pad.insert(pad.begin(), 9 - pad.length(), '0');
+		s += pad;
+	}
+	return s;
+}
+
 // Overriden Operators -----------------------------------------------------
 
 // operator<<()
 // Inserts string representation of N into stream.
 std::ostream& operator<<( std::ostream& stream, BigInteger N ) {
-	return stream << "yo";
+	return stream << N.BigInteger::to_string();
 }
 
 // operator==()
