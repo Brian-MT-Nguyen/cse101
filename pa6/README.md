@@ -17,7 +17,7 @@ The Table of Contents of all files in this program
 * The header file or interface of the BigInteger ADT.
 5. BigInteger.cpp
 * The BigInteger ADT.
-6. BigInteger.cpp
+6. BigIntegerTest.cpp
 * The Test Client to test functionality of the BigInteger ADT.
 7. Arithmetic.cpp
 * The Client Function which is a calculator that performs arithmetic operations on arbitrarily large signed integers.
