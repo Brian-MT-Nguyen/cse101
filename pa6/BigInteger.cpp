@@ -52,6 +52,7 @@ BigInteger::BigInteger(std::string s) {
 		signum = -1;
 		c.erase(0,1);
 	}
+	c.erase(0, c.find_first_not_of('0'));
 	if(c.length() % power != 0) {
 		int feLength = (c.length() % power);
 		std::string e = c.substr(0, feLength);
