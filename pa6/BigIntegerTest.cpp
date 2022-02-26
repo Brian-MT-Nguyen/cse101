@@ -1,7 +1,9 @@
-//-----------------------------------------------------------------------------
-//  BigIntegerClient.cpp 
-//  A test client for the BigInteger ADT
-//-----------------------------------------------------------------------------
+/*********************************************************************************
+ * Brian Nguyen, bnguy118
+ * 2022 Winter CSE101 PA6
+ * BigIntegerTest.cpp
+ * A Test Client for BigInteger ADT
+ *********************************************************************************/
 #include<iostream>
 #include<string>
 #include<stdexcept>
