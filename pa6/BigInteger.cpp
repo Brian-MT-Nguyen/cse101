@@ -325,7 +325,6 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
 
 	L.moveBack();
 	int shiftCounter = 0;
-	int sign = 0;
 	while(L.position() > 0) {
 		List Copy = T;
 		long element = (N.signum)*L.movePrev();
