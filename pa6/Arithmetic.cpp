@@ -44,14 +44,40 @@ int main(int argc, char *argv[]) {
 	getline(in, number);
 	BigInteger B = number;
 
-	cout << A << endl << endl;
-	cout << B << endl << endl;
+	out << A << endl << endl;
+	out << B << endl << endl;
 
 	BigInteger C = A + B;
-	cout << C << endl << endl;
+	out << C << endl << endl;
+
+	BigInteger D = A - B;
+	out << D << endl << endl;
+
+	BigInteger E = A - A;
+	out << E << endl << endl;
+
+	BigInteger F = A + A + A;
+	BigInteger G = B + B;
+	BigInteger FS = F-G;
+	out << FS << endl << endl;
+
+	BigInteger FM = A * B;
+	out << FM << endl << endl;
+
+	BigInteger ExpA = A * A;
+	out << ExpA << endl << endl;
+
+	BigInteger ExpB = B * B;
+	out << ExpB << endl << endl;
+
+	BigInteger CExpA = A * A * A * A;
+	BigInteger CExpB = B * B * B * B * B;
+	BigInteger AddA = CExpA + CExpA + CExpA + CExpA + CExpA + CExpA + CExpA + CExpA + CExpA;
+	BigInteger AddB = CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB + CExpB;
+	BigInteger R = AddA + AddB;
+	out << R << endl << endl;
 
 	in.close();
 	out.close();
-
 	return(EXIT_SUCCESS);
 }
