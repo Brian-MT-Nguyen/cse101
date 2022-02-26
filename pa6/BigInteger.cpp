@@ -135,7 +135,219 @@ void BigInteger::negate() {
 	signum = -signum;
 }
 
+// BigInteger Arithmetic Helper functions ----------------------------------
+
+// negateList()
+// Changes the sign of each integer in List L.
+// Used by normalize().
+void negateList(List& L) {
+	L.moveFront();
+	while(L.position() < L.length()) {
+		long element = L.moveNext();
+		L.setBefore(-element);
+	}
+}
+
+// sumList()
+// Overwrites the state of S with signA*A + sgnB*B (considered as vectors).
+// Used by both sum().
+void sumList(List& S, List A, List B, int sgnA, int sgnB) {
+	// clear list in case
+	if(S.length() > 0) {
+		S.clear();
+	}
+	// start adding from back to front
+	A.moveBack();
+	B.moveBack();
+	while((A.position() > 0) && (B.position() > 0)) {
+		// add elements and insert in list
+		long AElement = (sgnA)*A.movePrev();
+		long BElement = (sgnB)*B.movePrev();
+		S.insertAfter(AElement + BElement);
+	}
+	// if remaining elements still in list then insert remaining
+	while(A.position() > 0) {
+		long AElement = (sgnA)*A.movePrev();
+		S.insertAfter(AElement);
+	}
+	while(B.position() > 0) {
+		long BElement = (sgnB)*B.movePrev();
+		S.insertAfter(BElement);
+	}
+}
+
+// subList()
+// Overwrites the state of S with sgnA*A - sgnB*B (considered as vectors).
+// Used by sub().
+void subList(List &S, List A, List B, int sgnA, int sgnB) {
+	// clear list in case
+	if(S.length() > 0) {
+		S.clear();
+	}
+	// start subtracting from back to front
+	A.moveBack();
+	B.moveBack();
+	while((A.position() > 0) && (B.position() > 0)) {
+		// subtract elements and insert in list
+		long AElement = (sgnA)*A.movePrev();
+		long BElement = (sgnB)*B.movePrev();
+		S.insertAfter(AElement - BElement);
+	}
+	// if remaining elements still in list then insert remaining
+	while(A.position() > 0) {
+		long AElement = (sgnA)*A.movePrev();
+		S.insertAfter(AElement);
+	}
+	while(B.position() > 0) {
+		long BElement = (sgnB)*B.movePrev();
+		// special case needs to be negative BElement
+		S.insertAfter(-BElement);
+	}
+}
+
+// normalizeList()
+// Performs carries from right to left (least to most significant
+// digits), then returns the sign of the resulting integer. Used
+// by add(), sub() and mult().
+int normalizeList(List& L) {
+	// check for negation case when non-normalized list is negative
+	int sign = 1;
+	if(L.front() < 0) {
+		negateList(L);
+		sign = -1;
+	}
+	// start normalizing from back to front
+	L.moveBack();
+	long carbor = 0;
+	while(L.position() > 0) {
+		// if there is a carry/borrow then apply to borrowed from digit
+		if(carbor != 0) {
+			L.setBefore(L.peekPrev() + carbor);
+			carbor = 0;
+		}
+		// if number is not from 0 to base-1 then normalize
+		long element = L.movePrev();
+		if(element < 0) {
+			carbor = (element/base)-1;
+			L.setAfter(element-(base*carbor));
+		}
+		else if(element >= base) {
+			carbor = (element/base);
+			L.setAfter(element-(base*carbor));
+		}
+	}
+	// if carry/borrow still exist then add to front of list
+	if(carbor > 0) {
+		L.insertBefore(carbor);
+		L.movePrev();
+	}
+	// remove leading zeros
+	while(L.position() < L.length()) {
+		if(L.peekNext() == 0) {
+			L.eraseAfter();
+		}
+		else {
+			break;
+		}
+	}
+	// detect signs based on most significant digit
+	if(L.length() == 0) {
+		sign = 0;
+	}
+	else if(L.peekNext() < 0) {
+		sign = -1;
+	}
+	else if((sign != -1) && (L.peekNext() > 0)) {
+		sign = 1;
+	}
+	return sign;
+}
+
+// shiftList()
+// Prepends p zero digits to L, multiplying L by base^p. Used by mult().
+void shiftList(List& L, int p) {
+	L.moveBack();
+	for(int i = 0; i < p; i++) {
+		L.insertAfter(0);
+	}
+}
+
+// scalarMultList()
+// Multiplies L (considered as a vector) by m. Used by mult().
+void scalarMultList(List& L, ListElement m) {
+	L.moveBack();
+	while (L.position() > 0) {
+		long element = L.movePrev();
+		L.setAfter(m * element);
+	}
+}
+
 // BigInteger Arithmetic operations ----------------------------------------
+
+// add()
+// Returns a BigInteger representing the sum of this and N.
+BigInteger BigInteger::add(const BigInteger& N) const {
+	BigInteger S;
+	List T = this->digits;
+	List L = N.digits;
+	List Sum;
+	sumList(Sum, T, L, this->signum, N.signum);
+	int sign = normalizeList(Sum);
+	S.signum = sign;
+	S.digits = Sum;
+	return S;
+}
+
+// sub()
+// Returns a BigInteger representing the difference of this and N.
+BigInteger BigInteger::sub(const BigInteger& N) const {
+	BigInteger D;
+	List T = this->digits;
+	List L = N.digits;
+	List Diff;
+	subList(Diff, T, L, this->signum, N.signum);
+	int sign = normalizeList(Diff);
+	D.signum = sign;
+	D.digits = Diff;
+	return D;
+}
+
+// mult()
+// Returns a BigInteger representing the product of this and N.
+BigInteger BigInteger::mult(const BigInteger& N) const {
+	BigInteger M;
+	List T = this->digits;
+	if(this->signum == -1) {
+		negateList(T);
+	}
+	List L = N.digits;
+	List Prod;
+
+	L.moveBack();
+	int shiftCounter = 0;
+	int sign = 0;
+	while(L.position() > 0) {
+		List Copy = T;
+		long element = (N.signum)*L.movePrev();
+		scalarMultList(Copy, element);
+		shiftList(Copy, shiftCounter);
+		normalizeList(Copy);
+		List PCopy = Prod;
+		sumList(Prod, Copy, PCopy, 1, 1);
+		normalizeList(Prod);
+		shiftCounter += 1;
+	}
+	if((this->signum == -1 && N.signum == 1) || (this->signum == 1 && N.signum == -1)) {
+		M.signum = -1;
+	} else {
+		M.signum = 1;
+	}
+	if(Prod.length() == 0) {
+		M.signum = 0;
+	}
+	M.digits = Prod;
+	return M;
+}
 
 // Other Functions ---------------------------------------------------------
 
@@ -215,4 +427,43 @@ bool operator>=( const BigInteger& A, const BigInteger& B ) {
 		return true;
 	}
 	return false;
+}
+
+// operator+()
+// Returns the sum A+B.
+BigInteger operator+( const BigInteger& A, const BigInteger& B ) {
+	return A.BigInteger::add(B);
+}
+
+// operator+=()
+// Overwrites A with the sum A+B.
+BigInteger operator+=( BigInteger& A, const BigInteger& B ) {
+	A = A.BigInteger::add(B);
+	return A;
+}
+
+// operator-()
+// Returns the difference A-B.
+BigInteger operator-( const BigInteger& A, const BigInteger& B ) {
+	return A.BigInteger::sub(B);
+}
+
+// operator-=()
+// Overwrites A with the difference A-B.
+BigInteger operator-=( BigInteger& A, const BigInteger& B ) {
+	A = A.BigInteger::sub(B);
+	return A;
+}
+
+// operator*()
+// Returns the product A*B.
+BigInteger operator*( const BigInteger& A, const BigInteger& B ) {
+	return A.BigInteger::mult(B);
+}
+
+// operator*=()
+// Overwrites A with the product A*B.
+BigInteger operator*=( BigInteger& A, const BigInteger& B ) {
+	A = A.BigInteger::mult(B);
+	return A;
 }
