@@ -1,9 +1,14 @@
 #------------------------------------------------------------------------------
-#  Makefile for CSE 101 Programming Assignment 6
+# Brian Nguyen, bnguy118
+# 2022 Winter CSE 101 PA6
+# Makefile
+# The makefile that runs and compilies the files to run the program of PA6
+# Also removes computer geneterated files, formats code, and checks for
+# memory leaks in clients
 #
 #  make                     makes Arithmetic
-#  make BigIntegerClient    makes BigIntegerClient
-#  make ListClient          makes ListClient
+#  make BigIntegerTest      makes BigIntegerTest
+#  make ListTest            makes ListTest
 #  make clean               removes all binaries
 #  make ArithmeticCheck     runs Arithmetic in valgrind on in4 junk4
 #  make BigIntegerCheck     runs BigIntegerTest in valgrind
