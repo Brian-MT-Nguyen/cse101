@@ -46,7 +46,7 @@ void Dictionary::preOrderString(std::string& s, Node* R) const {
 // Recursively inserts a deep copy of the subtree rooted at R into this
 // Dictionary. Recursion terminates at N.
 void Dictionary::preOrderCopy(Node* R, Node* N) {
-	if(R == N || R == nil) {
+	if((R == N) || (R == nil)) {
 		return;
 	}
 	this->setValue(R->key, R->val);
@@ -69,13 +69,13 @@ void Dictionary::postOrderDelete(Node* R) {
 // Searches the subtree rooted at R for a Node with key==k. Returns
 // the address of the Node if it exists, returns nil otherwise.
 Dictionary::Node* Dictionary::search(Node* R, keyType k) const {
-	if(R == nil || R->key.compare(k) == 0) {
+	if((R == nil) || (R->key.compare(k) == 0)) {
 		return R;
 	}
 	else if(R->key.compare(k) < 0) {
 		return search(R->left, k);
 	}
-	else if(R->key.compare(k) > 0) {
+	else {
 		return search(R->right, k);
 	}
 }
@@ -162,6 +162,7 @@ Dictionary::Dictionary(const Dictionary& D) {
 
 Dictionary::~Dictionary() {
 	this->postOrderDelete(this->root);
+	delete nil;
 }
 
 // Access functions --------------------------------------------------------
@@ -176,35 +177,46 @@ int Dictionary::size() const {
 // Returns true if there exists a pair such that key==k, and returns false
 // otherwise.
 bool Dictionary::contains(keyType k) const {
-
+	Node *S = search(this->root, k);
+	return (S != nil);
 }
 
 // getValue()
 // Returns a reference to the value corresponding to key k.
 // Pre: contains(k)
 valType& Dictionary::getValue(keyType k) const {
-
+	Node *S = search(this->root, k);
+	if(S == nil) {
+		throw std::logic_error("Dictionary: getValue(): key "+ k +" does not exist");
+	}
+	return S->val;
 }
 
 // hasCurrent()
 // Returns true if the current iterator is defined, and returns false
 // otherwise.
 bool Dictionary::hasCurrent() const {
-
+	return (this->current != nil);
 }
 
 // currentKey()
 // Returns the current key.
 // Pre: hasCurrent()
 keyType Dictionary::currentKey() const {
-
+	if(this->current == nil) {
+		throw std::logic_error("Dictionary: currentKey(): current undefined");
+	}
+	return this->current->key;
 }
 
 // currentVal()
 // Returns a reference to the current value.
 // Pre: hasCurrent()
 valType& Dictionary::currentVal() const {
-
+	if(this->current == nil) {
+		throw std::logic_error("Dictionary: currentKey(): current undefined");
+	}
+	return this->current->val;
 }
 
 // Manipulation procedures -------------------------------------------------
@@ -212,7 +224,10 @@ valType& Dictionary::currentVal() const {
 // clear()
 // Resets this Dictionary to the empty state, containing no pairs.
 void Dictionary::clear() {
-
+	this->postOrderDelete(this->root);
+	this->current = nil;
+	this->root = nil;
+	num_pairs = 0;
 }
 
 // setValue()
@@ -236,6 +251,3 @@ void Dictionary::remove(keyType k) {
 void Dictionary::begin() {
 
 }
-
-
-
