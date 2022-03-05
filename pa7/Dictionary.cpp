@@ -1,3 +1,9 @@
+/*********************************************************************************
+ * Brian Nguyen, bnguy118
+ * 2022 Winter CSE101 PA7
+ * Dictionary.cpp
+ * Dictionary ADT
+ *********************************************************************************/
 #include<iostream>
 #include<string>
 #include<stdexcept>
