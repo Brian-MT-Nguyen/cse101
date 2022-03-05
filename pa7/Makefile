@@ -1,5 +1,10 @@
 #------------------------------------------------------------------------------
-#  Makefile for CSE 101 Programming Assignment 7
+# Brian Nguyen, bnguy118
+# 2022 Winter CSE 101 PA7
+# Makefile
+# The makefile that runs and compilies the files to run the program of PA7
+# Also removes computer geneterated files, formats code, and checks for
+# memory leaks in clients
 #
 #  make                     makes Order
 #  make DictionaryTest      makes DictionaryTest
