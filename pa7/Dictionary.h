@@ -52,7 +52,7 @@ private:
    void preOrderString(std::string& s, Node* R) const;
 
    // preOrderCopy()
-   // Recursively inserts a deep copy of the subtree rooted at R into this 
+   // Recursively inserts a deep copy of the subtree rooted at R into this
    // Dictionary. Recursion terminates at N.
    void preOrderCopy(Node* R, Node* N);
 
@@ -66,32 +66,35 @@ private:
    Node* search(Node* R, keyType k) const;
 
    // findMin()
-   // If the subtree rooted at R is not empty, returns a pointer to the 
+   // If the subtree rooted at R is not empty, returns a pointer to the
    // leftmost Node in that subtree, otherwise returns nil.
    Node* findMin(Node* R);
 
    // findMax()
-   // If the subtree rooted at R is not empty, returns a pointer to the 
+   // If the subtree rooted at R is not empty, returns a pointer to the
    // rightmost Node in that subtree, otherwise returns nil.
    Node* findMax(Node* R);
 
    // findNext()
    // If N does not point to the rightmost Node, returns a pointer to the
-   // Node after N in an in-order tree walk.  If N points to the rightmost 
-   // Node, or is nil, returns nil. 
+   // Node after N in an in-order tree walk.  If N points to the rightmost
+   // Node, or is nil, returns nil.
    Node* findNext(Node* N);
 
    // findPrev()
    // If N does not point to the leftmost Node, returns a pointer to the
-   // Node before N in an in-order tree walk.  If N points to the leftmost 
+   // Node before N in an in-order tree walk.  If N points to the leftmost
    // Node, or is nil, returns nil.
    Node* findPrev(Node* N);
 
+   // Transplant()
+   // Helper function for remove()
+   void Transplant(Node* U, Node* V);
 public:
 
    // Class Constructors & Destructors ----------------------------------------
-   
-   // Creates new Dictionary in the empty state. 
+
+   // Creates new Dictionary in the empty state.
    Dictionary();
 
    // Copy constructor.
@@ -118,13 +121,13 @@ public:
    valType& getValue(keyType k) const;
 
    // hasCurrent()
-   // Returns true if the current iterator is defined, and returns false 
+   // Returns true if the current iterator is defined, and returns false
    // otherwise.
    bool hasCurrent() const;
 
    // currentKey()
    // Returns the current key.
-   // Pre: hasCurrent() 
+   // Pre: hasCurrent()
    keyType currentKey() const;
 
    // currentVal()
@@ -140,7 +143,7 @@ public:
    void clear();
 
    // setValue()
-   // If a pair with key==k exists, overwrites the corresponding value with v, 
+   // If a pair with key==k exists, overwrites the corresponding value with v,
    // otherwise inserts the new pair (k, v).
    void setValue(keyType k, valType v);
 
@@ -152,24 +155,24 @@ public:
 
    // begin()
    // If non-empty, places current iterator at the first (key, value) pair
-   // (as defined by the order operator < on keys), otherwise does nothing. 
+   // (as defined by the order operator < on keys), otherwise does nothing.
    void begin();
 
    // end()
    // If non-empty, places current iterator at the last (key, value) pair
-   // (as defined by the order operator < on keys), otherwise does nothing. 
+   // (as defined by the order operator < on keys), otherwise does nothing.
    void end();
 
    // next()
-   // If the current iterator is not at the last pair, advances current 
-   // to the next pair (as defined by the order operator < on keys). If 
+   // If the current iterator is not at the last pair, advances current
+   // to the next pair (as defined by the order operator < on keys). If
    // the current iterator is at the last pair, makes current undefined.
    // Pre: hasCurrent()
    void next();
 
    // prev()
-   // If the current iterator is not at the first pair, moves current to  
-   // the previous pair (as defined by the order operator < on keys). If 
+   // If the current iterator is not at the first pair, moves current to
+   // the previous pair (as defined by the order operator < on keys). If
    // the current iterator is at the first pair, makes current undefined.
    // Pre: hasCurrent()
    void prev();
@@ -179,8 +182,8 @@ public:
 
    // to_string()
    // Returns a string representation of this Dictionary. Consecutive (key, value)
-   // pairs are separated by a newline "\n" character, and the items key and value 
-   // are separated by the sequence space-colon-space " : ". The pairs are arranged 
+   // pairs are separated by a newline "\n" character, and the items key and value
+   // are separated by the sequence space-colon-space " : ". The pairs are arranged
    // in order, as defined by the order operator <.
    std::string to_string() const;
 
@@ -197,7 +200,7 @@ public:
 
 
    // Overloaded Operators ----------------------------------------------------
-   
+
    // operator<<()
    // Inserts string representation of Dictionary D into stream, as defined by
    // member function to_string().
@@ -205,7 +208,7 @@ public:
 
    // operator==()
    // Returns true if and only if Dictionary A equals Dictionary B, as defined
-   // by member function equals(). 
+   // by member function equals().
    friend bool operator==( const Dictionary& A, const Dictionary& B );
 
    // operator=()

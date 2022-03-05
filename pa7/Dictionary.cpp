@@ -25,7 +25,7 @@ void Dictionary::inOrderString(std::string& s, Node* R) const {
 		return;
 	}
 	inOrderString(s, R->left);
-	s += R->key;
+	s += R->key + " : " + std::to_string(R->val) + "\n";
 	inOrderString(s, R->right);
 }
 
@@ -37,7 +37,7 @@ void Dictionary::preOrderString(std::string& s, Node* R) const {
 	if(R == nil) {
 		return;
 	}
-	s += R->key;
+	s += R->key + "\n";
 	preOrderString(s, R->left);
 	preOrderString(s, R->right);
 }
@@ -49,7 +49,7 @@ void Dictionary::preOrderCopy(Node* R, Node* N) {
 	if((R == N) || (R == nil)) {
 		return;
 	}
-	this->setValue(R->key, R->val);
+	setValue(R->key, R->val);
 	preOrderCopy(R->left, N);
 	preOrderCopy(R->right, N);
 }
@@ -73,10 +73,10 @@ Dictionary::Node* Dictionary::search(Node* R, keyType k) const {
 		return R;
 	}
 	else if(R->key.compare(k) < 0) {
-		return search(R->left, k);
+		return search(R->right, k);
 	}
 	else {
-		return search(R->right, k);
+		return search(R->left, k);
 	}
 }
 
@@ -157,11 +157,11 @@ Dictionary::Dictionary(const Dictionary& D) {
 	num_pairs = 0;
 
 	// copy dictionary of D to this dictionary
-	this->preOrderCopy(D.root, D.nil);
+	preOrderCopy(D.root, D.nil);
 }
 
 Dictionary::~Dictionary() {
-	this->postOrderDelete(this->root);
+	postOrderDelete(root);
 	delete nil;
 }
 
@@ -177,7 +177,7 @@ int Dictionary::size() const {
 // Returns true if there exists a pair such that key==k, and returns false
 // otherwise.
 bool Dictionary::contains(keyType k) const {
-	Node *S = search(this->root, k);
+	Node *S = search(root, k);
 	return (S != nil);
 }
 
@@ -185,9 +185,9 @@ bool Dictionary::contains(keyType k) const {
 // Returns a reference to the value corresponding to key k.
 // Pre: contains(k)
 valType& Dictionary::getValue(keyType k) const {
-	Node *S = search(this->root, k);
+	Node *S = search(root, k);
 	if(S == nil) {
-		throw std::logic_error("Dictionary: getValue(): key "+ k +" does not exist");
+		throw std::logic_error("Dictionary: getValue(): key \""+ k +"\" does not exist");
 	}
 	return S->val;
 }
@@ -196,27 +196,27 @@ valType& Dictionary::getValue(keyType k) const {
 // Returns true if the current iterator is defined, and returns false
 // otherwise.
 bool Dictionary::hasCurrent() const {
-	return (this->current != nil);
+	return (current != nil);
 }
 
 // currentKey()
 // Returns the current key.
 // Pre: hasCurrent()
 keyType Dictionary::currentKey() const {
-	if(this->current == nil) {
+	if(current == nil) {
 		throw std::logic_error("Dictionary: currentKey(): current undefined");
 	}
-	return this->current->key;
+	return current->key;
 }
 
 // currentVal()
 // Returns a reference to the current value.
 // Pre: hasCurrent()
 valType& Dictionary::currentVal() const {
-	if(this->current == nil) {
+	if(current == nil) {
 		throw std::logic_error("Dictionary: currentKey(): current undefined");
 	}
-	return this->current->val;
+	return current->val;
 }
 
 // Manipulation procedures -------------------------------------------------
@@ -224,9 +224,9 @@ valType& Dictionary::currentVal() const {
 // clear()
 // Resets this Dictionary to the empty state, containing no pairs.
 void Dictionary::clear() {
-	this->postOrderDelete(this->root);
-	this->current = nil;
-	this->root = nil;
+	postOrderDelete(root);
+	current = nil;
+	root = nil;
 	num_pairs = 0;
 }
 
@@ -234,7 +234,53 @@ void Dictionary::clear() {
 // If a pair with key==k exists, overwrites the corresponding value with v,
 // otherwise inserts the new pair (k, v).
 void Dictionary::setValue(keyType k, valType v) {
+	Node *Y = nil;
+	Node *X = root;
+	while(X != nil) {
+		Y = X;
+		if(k.compare(X->key) < 0) {
+			X = X->left;
+		}
+		else if(k.compare(X->key) == 0) {
+			X->val = v;
+			return;
+		}
+		else {
+			X = X->right;
+		}
+	}
+	Node *Z = new Node(k, v);
+	Z->parent = Y;
+	Z->left = nil;
+	Z->right = nil;
+	num_pairs += 1;
+	if(Y == nil) {
+		root = Z;
+	}
+	else if(Z->key.compare(Y->key) < 0) {
+		Y->left = Z;
+	}
+	else {
+		Y->right = Z;
+	}
 
+}
+
+// Transplant()
+// private helper function for remove()
+void Dictionary::Transplant(Node* U, Node* V) {
+	if(U->parent == nil) {
+		root = V;
+	}
+	else if(U == U->parent->left) {
+		U->parent->left = V;
+	}
+	else {
+		U->parent->right = V;
+	}
+	if(V != nil) {
+		V->parent = U->parent;
+	}
 }
 
 // remove()
@@ -242,12 +288,136 @@ void Dictionary::setValue(keyType k, valType v) {
 // becomes undefined.
 // Pre: contains(k).
 void Dictionary::remove(keyType k) {
-
+	Node *S = search(root, k);
+	if(S == nil) {
+		throw std::logic_error("Dictionary: remove(): key \""+ k +"\" does not exist");
+	}
+	if(current == S) {
+		current = nil;
+	}
+	if(S->left == nil) {
+		Transplant(S, S->right);
+	}
+	else if(S->right == nil) {
+		Transplant(S, S->left);
+	}
+	else {
+		Node *Y = findMin(S->right);
+		if(Y->parent != S) {
+			Transplant(Y, Y->right);
+			Y->right = S->right;
+			Y->right->parent = Y;
+		}
+		Transplant(S, Y);
+		Y->left = S->left;
+		Y->left->parent = Y;
+	}
+	num_pairs -= 1;
+	delete S;
 }
 
 // begin()
 // If non-empty, places current iterator at the first (key, value) pair
 // (as defined by the order operator < on keys), otherwise does nothing.
 void Dictionary::begin() {
+	if(num_pairs == 0) {
+		return;
+	}
+	current = findMin(root);
+}
 
+// end()
+// If non-empty, places current iterator at the last (key, value) pair
+// (as defined by the order operator < on keys), otherwise does nothing.
+void Dictionary::end() {
+	if(num_pairs == 0) {
+		return;
+	}
+	current = findMax(root);
+}
+
+// next()
+// If the current iterator is not at the last pair, advances current
+// to the next pair (as defined by the order operator < on keys). If
+// the current iterator is at the last pair, makes current undefined.
+// Pre: hasCurrent()
+void Dictionary::next() {
+	if(current == nil) {
+		throw std::logic_error("Dictionary: next(): current not defined");
+	}
+	current = findNext(current);
+}
+
+// prev()
+// If the current iterator is not at the first pair, moves current to
+// the previous pair (as defined by the order operator < on keys). If
+// the current iterator is at the first pair, makes current undefined.
+// Pre: hasCurrent()
+void Dictionary::prev() {
+	if(current == nil) {
+		throw std::logic_error("Dictionary: prev(): current not defined");
+	}
+	current = findPrev(current);
+}
+
+// Other Functions ---------------------------------------------------------
+
+// to_string()
+// Returns a string representation of this Dictionary. Consecutive (key, value)
+// pairs are separated by a newline "\n" character, and the items key and value
+// are separated by the sequence space-colon-space " : ". The pairs are arranged
+// in order, as defined by the order operator <.
+std::string Dictionary::to_string() const {
+	std::string s;
+	inOrderString(s, root);
+	return s;
+}
+
+// pre_string()
+// Returns a string consisting of all keys in this Dictionary. Consecutive
+// keys are separated by newline "\n" characters. The key order is given
+// by a pre-order tree walk.
+std::string Dictionary::pre_string() const {
+	std::string s;
+	preOrderString(s, root);
+	return s;
+}
+
+// equals()
+// Returns true if and only if this Dictionary contains the same (key, value)
+// pairs as Dictionary D.
+bool Dictionary::equals(const Dictionary& D) const {
+	return true;
+}
+
+// Overloaded Operators ----------------------------------------------------
+
+// operator<<()
+// Inserts string representation of Dictionary D into stream, as defined by
+// member function to_string().
+std::ostream& operator<<( std::ostream& stream, Dictionary& D ) {
+	return stream << D.Dictionary::to_string();
+}
+
+// operator==()
+// Returns true if and only if Dictionary A equals Dictionary B, as defined
+// by member function equals().
+bool operator==( const Dictionary& A, const Dictionary& B ) {
+	return A.Dictionary::equals(B);
+}
+
+// operator=()
+// Overwrites the state of this Dictionary with state of D, and returns a
+// reference to this Dictionary.
+Dictionary& Dictionary::operator=( const Dictionary& D ) {
+	if(this != &D) {
+		Dictionary temp = D;
+
+		std::swap(nil, temp.nil);
+		std::swap(root, temp.root);
+		std::swap(current, temp.current);
+		std::swap(num_pairs, temp.num_pairs);
+	}
+
+	return *this;
 }
