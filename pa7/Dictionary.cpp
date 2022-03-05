@@ -387,7 +387,7 @@ std::string Dictionary::pre_string() const {
 // Returns true if and only if this Dictionary contains the same (key, value)
 // pairs as Dictionary D.
 bool Dictionary::equals(const Dictionary& D) const {
-	return true;
+	return ((this->pre_string() == D.pre_string()) && this->to_string() == D.to_string());
 }
 
 // Overloaded Operators ----------------------------------------------------
