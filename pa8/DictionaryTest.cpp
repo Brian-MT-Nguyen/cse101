@@ -1,7 +1,9 @@
-//-----------------------------------------------------------------------------
-// DictionaryClient.cpp
-// A test client for the Dictionary ADT
-//-----------------------------------------------------------------------------
+/*********************************************************************************
+ * Brian Nguyen, bnguy118
+ * 2022 Winter CSE101 PA8
+ * DictionaryTest.cpp
+ * A test client for the Dictionary ADT
+ *********************************************************************************/
 #include<iostream>
 #include<string>
 #include<stdexcept>
