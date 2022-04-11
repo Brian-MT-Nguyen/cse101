@@ -214,9 +214,12 @@ void addEdge(Graph G, int u, int v) {
             "Graph Error: calling addEdge() with vertex v out of range\n");
     exit(EXIT_FAILURE);
   }
+  int currentSize = G->size;
   addArc(G, u, v);
   addArc(G, v, u);
-  G->size -= 1;
+  if (G->size > currentSize) {
+    G->size -= 1;
+  }
 }
 
 // addArc()
@@ -247,8 +250,8 @@ void addArc(Graph G, int u, int v) {
     prepend(G->adjList[u], v);
   } else {
     if (get(G->adjList[u]) == v) {
-      fprintf(stderr,
-              "Warning: Try to add duplicate existing edge to adjacency List");
+      fprintf(stderr, "Warning: Try to add duplicate existing arc/edge to "
+                      "adjacency List\n");
       return;
     }
     insertAfter(G->adjList[u], v);
